@@ -1,0 +1,23 @@
+{
+  "name": "kakahiaka",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "underscore": "~1.4.4",
+    "underscore-fix": "git://github.com/ympbyc/underscore-fix.git"
+  },
+  "homepage": "https://github.com/ympbyc/kakahiaka",
+  "_release": "ef0ad6a67e",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "ef0ad6a67e37e37b1d5839b4794278d5701fd2b2"
+  },
+  "_source": "https://github.com/ympbyc/kakahiaka.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/ympbyc/kakahiaka.git",
+  "_direct": true
+}

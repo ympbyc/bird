@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf8">
+    <title>KAKAHIAKA IDE</title>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/underscore-fix/underscore-fix.js"></script>
+    <script src="bower_components/kakahiaka/kakahiaka.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="header box">
+      <h1 class="global-title">KAKAHIAKA IDE</h1>
+    </nav>
+    <div class="notification box"></div>
+
+    <div class="top-half box resize-v">
+      <section class="preview box resize-h">
+        <iframe width="100%" height="100%"
+                src="http://pilotz02.sakura.ne.jp/ranking-app/index.html"></iframe>
+      </section>
+      <section class="ide box">
+        <div class="ide-watcher-edit-wrap ide-section box hidden">
+          <div class="ide-watcher-edit code-edit round box code">
+            <div>K.watch(&lt;app&gt;, <input type="text" class="round">, function (state) {</div>
+            <textarea class="ide-watcher-edit-body code-body round"></textarea>
+            <div>});</div>
+          </div>
+        </div>
+
+        <div class="ide-model ide-section box">
+          <h2>MODELS</h2>
+          <table class="ide-state-table box">
+            <thead>
+              <tr> <th>STATE</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
+            </thead>
+            <tbody><!-- #state-row --></tbody>
+          </table>
+        </div>
+
+        <div class="ide-transitions-wrap ide-section box">
+          <h2>TRANSITIONS</h2>
+          <div class="ide-transitions pill-wrapper box">
+            <!-- #transition-pill -->
+            <span class="transition-pill pill">simple_update</span>
+            <span class="transition-pill pill">select_app</span>
+            <span class="transition-pill pill">toggle_favorite</span>
+          </div>
+        </div>
+
+        <div class="ide-dom-listeners-wrap ide-section box">
+          <h2>DOM LISTENERS</h2>
+          <div class="ide-dom-listeners pill-wrapper box">
+            <!-- #dom-listener-pill -->
+            <span class="dom-listener-pill pill">#search click</span>
+            <span class="dom-listener-pill pill">#searchbox change</span>
+            <span class="dom-listener-pill pill">.app click</span>
+          </div>
+          <div class="ide-dom-listener-edit code-edit round box code">
+            <div>$("#k-app").on(<input type="text" class="round"
+                                       id="ide-dom-listener-name">,
+              <input type="text" class="round"
+                     id="ide-dom-listener-sel">, function (e) {</div>
+            <textarea class="ide-dom-listener-body code-body round"
+                      id="ide-dom-listener-body"></textarea>
+            <div>});</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <script type="text/template" id="state-row">
+      <tr <% if (row_num % 2 === 0) { %> class="state-row-darker" <% } %>>
+        <td class="state-key"><%= key %></td>
+        <td class="state-val code"><%= val %></td>
+        <td class="state-listeners">
+          <% _.each(listeners, function (l) {%>
+          <div class="state-listener ball"></div>
+          <% }); %>
+        </td>
+      </tr>
+    </script>
+
+
+    <script src="index.js"></script>
+  </body>
+</html>
