@@ -21,6 +21,16 @@ div, section {
     /* border: 0.5px solid #c3c3c3; */
 }
 
+input {
+    border: none;
+    width: 8em;
+}
+
+textarea, input {
+    font-family: monaco, menlo, monospace;
+}
+
+
 .box {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -55,6 +65,7 @@ div, section {
     height: 14px;
     border-radius: 7px;
     background: #E6855E;
+    cursor: pointer;
 }
 
 .pill-wrapper {
@@ -68,6 +79,7 @@ div, section {
     background: #F9DB57;
     margin: 2px 4px;
     border-radius: 0.5em;
+    cursor: pointer;
 }
 
 .round {
@@ -86,11 +98,50 @@ div, section {
     width: 8em;
 }
 
+.code-edit textarea, .code-edit input {
+    font-family: monaco, menlo, monospace;
+}
+
 .code-body {
     border: none;
     width: 80%;
     color: #737373;
     margin: 2px 40px;
+}
+
+.btn {
+    border: 1px solid #737373;
+    border-radius: 3px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.btn:active {
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2) inset;
+}
+
+.btn-green {
+    background-color: #CFE283;
+}
+
+.input-like {
+    background: #fff;
+    display: inline;
+    height: 15px;
+    padding: 0 2px;
+}
+
+.input-invisible {
+    background: transparent;
+    border: none;
+}
+
+.no-appearance {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
 }
 
 /* ----- global sections ----- */
@@ -121,13 +172,13 @@ div, section {
 
 .preview {
     float: left;
-    width: 60%;
+    width: 55%;
     height: 100%;
 }
 
 .ide {
     float: left;
-    width: 40%;
+    width: 45%;
     height: 100%;
 }
 
@@ -147,6 +198,7 @@ div, section {
 .ide-model {}
 
 .ide-state-table {
+    table-layout: fixed;
     width: 100%;
     background: #FCEDAA;
 }
@@ -160,6 +212,9 @@ div, section {
 .ide-state-table th {
     padding: 4px 8px;
     text-align: left;
+    width:   60px;
+    overflow: hidden;
+    resize: none;
 }
 
 .ide-state-table .state-key:after {
@@ -198,7 +253,7 @@ div, section {
 }
 
 .dom-listener-pill {
-    background: #E6855E;
+    background: #CFE283;
 }
 
 .ide-dom-listener-edit {
@@ -212,7 +267,15 @@ div, section {
 }
 
 
-/* ---- watcher edit ----*/
+/* ---- watch edit ----*/
 
-.ide-watcher-edit {
+.ide-watch-edit {
+    margin-top: 10px;
+}
+
+
+/* ---- transition edit ---- */
+
+.ide-transition-edit {
+    margin-top: 10px;
 }

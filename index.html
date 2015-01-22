@@ -2,6 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="utf8">
+    <meta description="Front End Development Made Interactive As Hell">
     <title>KAKAHIAKA IDE</title>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
@@ -18,19 +19,11 @@
     <div class="notification box"></div>
 
     <div class="top-half box resize-v">
-      <section class="preview box resize-h">
-        <iframe width="100%" height="100%"
-                src="http://pilotz02.sakura.ne.jp/ranking-app/index.html"></iframe>
+      <section class="preview box resize-h" id="preview">
+        <button id="fruit-machine">Fire up the Fruit Machine!</button>
+        <div id="fruit-machine-output"></div>
       </section>
       <section class="ide box">
-        <div class="ide-watcher-edit-wrap ide-section box hidden">
-          <div class="ide-watcher-edit code-edit round box code">
-            <div>K.watch(&lt;app&gt;, <input type="text" class="round">, function (state) {</div>
-            <textarea class="ide-watcher-edit-body code-body round"></textarea>
-            <div>});</div>
-          </div>
-        </div>
-
         <div class="ide-model ide-section box">
           <h2>MODELS</h2>
           <table class="ide-state-table box">
@@ -38,30 +31,52 @@
               <tr> <th>STATE</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
             </thead>
             <tbody><!-- #state-row --></tbody>
+            <tfoot>
+              <tr id="ide-model-create" class="hidden">
+                <td class="state-key code"><input id="ide-model-create-key" type="text" ></td>
+                <td class="state-val code"><input id="ide-model-create-val" type="text" ></td>
+              </tr>
+              <tr>
+                <td><button class="btn btn-green" id="ide-model-add">+</button></td>
+              </tr>
+            </tfoot>
           </table>
+
+          <div class="ide-watch-edit code-edit round box code">
+            <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (state, old_state) {</div>
+            <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
+            <div>});</div>
+          </div>
         </div>
 
         <div class="ide-transitions-wrap ide-section box">
           <h2>TRANSITIONS</h2>
-          <div class="ide-transitions pill-wrapper box">
+          <div id="ide-transitions" class="ide-transitions pill-wrapper box">
             <!-- #transition-pill -->
-            <span class="transition-pill pill">simple_update</span>
-            <span class="transition-pill pill">select_app</span>
-            <span class="transition-pill pill">toggle_favorite</span>
+            <!-- span class="transition-pill pill">simple_update</span -->
+          </div>
+
+          <div id="ide-transition-edit"
+               class="ide-transition-edit code-edit round box code"
+               data-autotyper="transition-autotyper-template">
+            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
+            <textarea id="ide-transition-body"
+                      class="ide-transition-edit-body code-body round">
+return { ... };
+            </textarea>
+            <div>});</div>
           </div>
         </div>
 
         <div class="ide-dom-listeners-wrap ide-section box">
           <h2>DOM LISTENERS</h2>
-          <div class="ide-dom-listeners pill-wrapper box">
+          <div id="ide-dom-listeners" class="ide-dom-listeners pill-wrapper box">
             <!-- #dom-listener-pill -->
-            <span class="dom-listener-pill pill">#search click</span>
-            <span class="dom-listener-pill pill">#searchbox change</span>
-            <span class="dom-listener-pill pill">.app click</span>
+            <!-- span class="dom-listener-pill pill">#search click</span -->
           </div>
           <div class="ide-dom-listener-edit code-edit round box code">
             <div>$("#k-app").on(<input type="text" class="round"
-                                       id="ide-dom-listener-name">,
+                                       id="ide-dom-listener-ev">,
               <input type="text" class="round"
                      id="ide-dom-listener-sel">, function (e) {</div>
             <textarea class="ide-dom-listener-body code-body round"
@@ -75,17 +90,23 @@
 
     <script type="text/template" id="state-row">
       <tr <% if (row_num % 2 === 0) { %> class="state-row-darker" <% } %>>
-        <td class="state-key"><%= key %></td>
+        <td class="state-key code"><%= key %></td>
         <td class="state-val code"><%= val %></td>
         <td class="state-listeners">
           <% _.each(listeners, function (l) {%>
-          <div class="state-listener ball"></div>
+          <div class="state-listener ball" data-id="<%= l.id %>"></div>
           <% }); %>
         </td>
       </tr>
     </script>
 
+    <script type="text/template" id="transition-autotyper-template">
+var #i# = K.deftransition(function (state, #i#) {
+    #t#
+}
+    </script>
 
     <script src="index.js"></script>
+    <script src="autotyper.js"></script>
   </body>
 </html>
