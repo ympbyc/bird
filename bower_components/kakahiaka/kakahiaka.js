@@ -13,30 +13,28 @@ var kakahiaka = (function () {
     }
 
     function get_watchers (app, key) {
-        return app._watchers[key];
+        return app._watchers[key] || [];
     }
 
     function add_watch (app, key, f, immidiate) {
         if (_.has(app._watchers, key))
             app._watchers[key].push(f);
-        else
+        else {
             app._watchers[key] = [f];
-
-        if (immidiate && _.has(app._state, key))
-            setTimeout(function () { f(deref(app), null); }, 0);
+            if (immidiate && _.has(app._state, key))
+                setTimeout(function () { f(deref(app), null); }, 0);
+        }
         return app;
     }
 
 
     function commit (app, diff, old_s, new_s) {
         _.each(diff, function (__, key_changed) {
-            var watchers = get_watchers(app, key_changed);
-            if (watchers)
-                _.each(watchers, function (watcher) {
-                    setTimeout(function () {
-                        watcher(new_s, old_s);
-                    }, 0);
-                });
+            _.each(get_watchers(app, key_changed), function (watcher) {
+                setTimeout(function () {
+                    watcher(new_s, old_s);
+                }, 0);
+            });
         });
     }
 
@@ -67,17 +65,21 @@ var kakahiaka = (function () {
      */
     function deftransition (f) {
         return _.optarg(function (app, args) {
-            var old_s = deref(app);
+            var old_s = _.clone(deref(app));
             var diff  = _.apply(_.partial(f, old_s), args);
             if ( ! diff) return undefined;
             var new_s = _.merge(old_s, diff);
             commit(app, diff, old_s, new_s);
-            reset_BANG_(app, new_s);
             app._persist(new_s);
+            reset_BANG_(app, _.omit(new_s, new_s.__meta_keys || []));
             return undefined;
         });
     }
 
+
+    function meta (diff, info) {
+        return _.assoc(_.merge(diff, info), "__meta_keys", _.conj(_.keys(info), "__meta_keys"));
+    }
 
     /**
      * watch_transition :: App * String * ({new state} * {old state} -> undefined) -> undefined
@@ -98,6 +100,8 @@ var kakahiaka = (function () {
         deref:            deref,
         deftransition:    deftransition,
         watch_transition: watch_transition,
-        simple_update:    simple_update
+        watch:            watch_transition,
+        simple_update:    simple_update,
+        meta:             meta
     };
 }());

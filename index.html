@@ -8,27 +8,34 @@
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/underscore-fix/underscore-fix.js"></script>
     <script src="bower_components/kakahiaka/kakahiaka.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_light.min.css" />
   </head>
   <body>
     <nav class="header box">
       <h1 class="global-title">KAKAHIAKA IDE</h1>
+      <button class="ide-undo btn btn-green">UNDO</button>
+      <button class="ide-redo btn btn-green">REDO</button>
     </nav>
     <div class="notification box"></div>
 
     <div class="top-half box resize-v">
       <section class="preview box resize-h" id="preview">
-        <button id="fruit-machine">Fire up the Fruit Machine!</button>
-        <div id="fruit-machine-output"></div>
+        <iframe id="user-app-iframe" src="examples/fruits_machine/index.html"></iframe>
+        <button id="btn-user-app-reload" class="btn btn-blue">RELOAD</button>
       </section>
-      <section class="ide box">
+      <section id="ide" class="ide box">
         <div class="ide-model ide-section box">
-          <h2>MODELS</h2>
+          <h2>STATE</h2>
           <table class="ide-state-table box">
+            <col width="20%" />
+            <col width="60%" />
+            <col width="20%" />
             <thead>
-              <tr> <th>STATE</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
+              <tr> <th>MODEL</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
             </thead>
             <tbody><!-- #state-row --></tbody>
             <tfoot>
@@ -42,10 +49,11 @@
             </tfoot>
           </table>
 
-          <div class="ide-watch-edit code-edit round box code">
+          <div id="ide-watch-edit" class="ide-watch-edit code-edit round box code hidden">
             <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (state, old_state) {</div>
             <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
             <div>});</div>
+            <button class="delete-snippet btn btn-red hidden">✖︎</button>
           </div>
         </div>
 
@@ -57,14 +65,15 @@
           </div>
 
           <div id="ide-transition-edit"
-               class="ide-transition-edit code-edit round box code"
+               class="ide-transition-edit code-edit round box code hidden"
                data-autotyper="transition-autotyper-template">
-            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
+            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state<input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
             <textarea id="ide-transition-body"
                       class="ide-transition-edit-body code-body round">
 return { ... };
             </textarea>
             <div>});</div>
+            <button class="delete-snippet btn btn-red hidden">✖︎</button>
           </div>
         </div>
 
@@ -74,7 +83,8 @@ return { ... };
             <!-- #dom-listener-pill -->
             <!-- span class="dom-listener-pill pill">#search click</span -->
           </div>
-          <div class="ide-dom-listener-edit code-edit round box code">
+          <div id="ide-dom-listener-edit"
+               class="ide-dom-listener-edit code-edit round box code hidden">
             <div>$("#k-app").on(<input type="text" class="round"
                                        id="ide-dom-listener-ev">,
               <input type="text" class="round"
@@ -82,7 +92,13 @@ return { ... };
             <textarea class="ide-dom-listener-body code-body round"
                       id="ide-dom-listener-body"></textarea>
             <div>});</div>
+            <button class="delete-snippet btn btn-red hidden">✖︎</button>
           </div>
+        </div>
+
+        <div class="ide-section box">
+          <button class="ide-export-app btn btn-green">EXPORT APP</button>
+          <button class="ide-export-project btn btn-green">EXPORT PROJECT</button>
         </div>
       </section>
     </div>
@@ -96,6 +112,7 @@ return { ... };
           <% _.each(listeners, function (l) {%>
           <div class="state-listener ball" data-id="<%= l.id %>"></div>
           <% }); %>
+          <button class="btn-new-watch btn btn-green">+</button>
         </td>
       </tr>
     </script>
@@ -106,7 +123,46 @@ var #i# = K.deftransition(function (state, #i#) {
 }
     </script>
 
-    <script src="index.js"></script>
-    <script src="autotyper.js"></script>
+    <script type="text/template" id="code-generation-template">
+<% var ym = window.ympbyc_kakahiakaide.exposed %>
+if ( ! window.jQuery) ;
+if ( ! window._) ;
+if ( ! window.kakahiaka) ;
+
+window.your_app = (function () {
+    var K = window.kakahiaka;
+
+    var app = K.app(<%- JSON.stringify(models) %>);
+
+    <% _.each(transitions, function (t) { %>
+    var <%- t.name %> = K.deftransition(function (<%- t.args.join(",") %>) {
+        <%- ym.format_body(t.body) %>
+    });
+    <% }); %>
+
+
+    <% _.each(model_watches, function (w) { %>
+    K.watch_transition(app, "<%- w.watch_key %>", function (state, old_state) {
+        <%- ym.format_body(w.watch_body) %>
+    })
+    <% }); %>
+
+
+    <% _.each(dom_listeners, function (l) { %>
+    $(document).on("<%- l.event %>", "<%- l.selector %>", function (e) {
+        <%- ym.format_body(l.body) %>
+    });
+    <% }); %>
+
+    return app;
+});
+    </script>
+
+    <script src="js/injector.js"></script>
+    <script src="js/user_app.js"></script>
+    <script src="js/app_history.js"></script>
+    <script src="js/kakahiaka_ide.js"></script>
+    <script src="js/connection.js"></script>
+    <script src="js/index.js"></script>
   </body>
 </html>
