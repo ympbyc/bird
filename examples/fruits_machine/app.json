@@ -1,0 +1,66 @@
+{
+  "models": {
+    "fruits": [
+      "🍎"
+    ]
+  },
+  "transitions": [
+    {
+      "id": "id1",
+      "name": "update",
+      "args": [
+        "state",
+        "model_key",
+        "model_val"
+      ],
+      "body": "return _.assoc({}, model_key, model_val)"
+    },
+    {
+      "id": "98d3d938-3612-4ce0-aaad-fc35477285fe",
+      "name": "add_fruit",
+      "args": [
+        "state",
+        "f"
+      ],
+      "body": "return { fruits: state.fruits.concat([f]) };"
+    },
+    {
+      "id": "9f5228b1-397c-49ae-9a87-2ff1917a7131",
+      "name": "clear_fruits",
+      "args": [
+        "state"
+      ],
+      "body": "return {fruits: []}"
+    }
+  ],
+  "model_watches": [
+    {
+      "id": "458c127f-4647-4605-ae13-b08f0e44883a",
+      "watch_key": "fruits",
+      "watch_body": "$(\"#fruits\").html(\"\");\nstate.fruits.forEach(function (f) {\n  $(\"\").text(f).appendTo(\"#fruits\");\n});"
+    }
+  ],
+  "dom_listeners": [
+    {
+      "id": "0a804caa-9cb1-4173-8ae2-dd6a58349baa",
+      "event": "click",
+      "selector": "#new-fruit-btn",
+      "body": "add_fruit(user_app, _.sample([\n   \"🍎\", \"🍊\", \"🍉\", \"🍇\", \"🍓\", \"🍒\", \"🍏\", \"🍈\", \"🍌\", \"🍑\", \n   \"🍍\", \"🍋\", \"🍐\", \"🌰\"\n]));"
+    },
+    {
+      "id": "ecf47019-a936-4825-84c1-9d5baaa05b6e",
+      "event": "click",
+      "selector": "#no-fruits-btn",
+      "body": "clear_fruits(user_app);"
+    },
+    {
+      "id": "d2aa12d7-eb1d-4978-b0fa-ecf88491795c",
+      "event": "click",
+      "selector": ".fruit",
+      "body": "var $this = $(this);\nvar count = _.filter(kakahiaka.deref(user_app).fruits, function (f) {\n  return f === $this.text();\n}).length;\nalert(count + \"個の\" + $this.text() + \"があります！！！\");"
+    }
+  ],
+  "selected_model_watch_id": null,
+  "selected_transition_id": null,
+  "selected_dom_listener_id": null
+}

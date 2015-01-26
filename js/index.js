@@ -31,6 +31,7 @@ $(function () {
     var $dom_listener_body  = $("#ide-dom-listener-body");
     var $dom_listeners      = $("#ide-dom-listeners");
     var $dom_listener_delete = $("#ide-dom-listener-edit .delete-snippet");
+    var $libraries = $("#ide-libraries");
     var state_row_template   = _.template($("#state-row").html());
 
 
@@ -76,7 +77,7 @@ $(function () {
     K.watch_transition(app, "transitions", function (s) {
         $transitions.html("");
         _.each(s.transitions, function (t) {
-            $("<span>").addClass("transition-pill pill")
+            $("<span>").addClass("transition-pill pill code")
                 .attr("data-id", t.id)
                 .text(t.name)
                 .hover(function () {
@@ -107,7 +108,7 @@ $(function () {
     K.watch_transition(app, "dom_listeners", function (s) {
         $dom_listeners.html("");
         _.each(s.dom_listeners, function (l) {
-            $("<span>").addClass("dom-listener-pill pill")
+            $("<span>").addClass("dom-listener-pill pill code")
                 .attr("data-id", l.id)
                 .text(l.selector + "  " + l.event)
                 .appendTo($dom_listeners);
@@ -133,8 +134,17 @@ $(function () {
     // -- //
 
 
+    //libraries
+    K.watch_transition(app, "libraries", function (s) {
+        $libraries.html("");
+        _.each(s.libraries, function (l) {
+            $("<li>").html('<a href="'+l[0]+'">'+l[0]+'</a>').appendTo($libraries);
+        });
+    });
+
+
     $("#user-app-iframe").get(0).onload = function () {
-        window.ympbyc_kakahiakaide_injector();
+        window.ympbyc_kakahiakaide_inject();
         exposed.refresh(app);
     };
 
@@ -176,9 +186,9 @@ $(function () {
         $watch_edit.toggleClass("hidden");
     });
 
-
     $transition_body.on("keydown", function (e) {
-        if (e.keyCode !== 13 || e.ctrlKey) return;
+        if (e.keyCode !== 13 ) return;
+
         exposed.add_transition(app,
                                $transition_name.val(),
                                $transition_args.val(),
@@ -188,6 +198,7 @@ $(function () {
     });
 
     $transitions.on("click", ".transition-pill", function (e) {
+        e.preventDefault();
         K.simple_update(app, "selected_transition_id", $(this).data("id"));
     });
 
@@ -209,6 +220,7 @@ $(function () {
     });
 
     $dom_listeners.on("click", ".dom-listener-pill", function (e) {
+        e.preventDefault();
         K.simple_update(app, "selected_dom_listener_id", $(this).data("id"));
     });
 
@@ -239,6 +251,23 @@ $(function () {
     });
 
 
+    /*
+    $(".pill-wrapper").on("click", ".pill", function (e) {
+        var $focused = $("input:focus,textarea:focus");
+        var focused = $focused.get(0);
+        if ( ! focused) return true;
+        var pos = focused.selectionStart;
+        var txt = $focused.val();
+        var pill_txt = $(this).text();
+        console.log(pos);
+        $focused.val("");
+        $focused.val(txt.substr(0,pos) + pill_txt + txt.substr(pos));
+        if (focused.setSelectionRange)
+            focused.setSelectionRange(pos + pill_txt.length, pos + pill_txt.length);
+        return false;
+    });
+     */
+
     $undo.click(function () {
         exposed.undo(app);
     });
@@ -246,8 +275,32 @@ $(function () {
         exposed.redo(app);
     });
     $reload.click(function () {
-        $("#user-app-iframe").get(0).contentWindow.location.reload();
+        var cur_src = $("#user-app-iframe").attr("src");
+        var new_src = $("#user-app-html-href").val();
+        if (cur_src !== new_src)
+            $("#user-app-iframe").attr("src", new_src);
+        else
+            $("#user-app-iframe").get(0).contentWindow.location.reload();
     });
+
+
+    _.chain(window).keys()
+        .reject(function (x) {
+            return _.contains(window.__default_window_properties, x);
+        })
+        .without("__default_window_properties", "ympbyc_kakahiakaide_inject",
+                 "ympbyc_kakahiakaide_inject_", "app_history", "kideapp", "kide_ex")
+        .each(function (x) {
+            var $el = $("<span>")
+                .text(x)
+                .addClass("pill code")
+                .appendTo("#ide-other-objects");
+            if (_.contains(["kakahiaka", "user_app",
+                            "$", "jQuery", "_"], x))
+                $el.addClass("pill-blue");
+            else
+                $el.addClass("transcluent");
+        });
 
 
     var code_template = _.template($("#code-generation-template").html());
@@ -256,6 +309,11 @@ $(function () {
         var $p = $("#preview");
         $p.html('<pre><code class="javascript hljs">'
                 + code_template(K.deref(app))
+                + "("
+                + window.ympbyc_kakahiakaide_inject_.toString()
+                + "(window, "
+                + JSON.stringify(K.deref(app).libraries, null, "  ")
+                + ")).on_last_item_loaded = window.init_kakahiaka_app;"
                 + '</code></pre>');
         hljs.highlightBlock($p.find("pre code").get(0));
     });
@@ -286,6 +344,18 @@ $(function () {
         setTimeout(function () {
             $edit.find("input:enabled,textarea:enabled").get(0).focus();
         }, 0);
+    }
+
+    function insert_textarea ($ta, in_txt) {
+        var $focused = $ta || $("input:focus,textarea:focus");
+        var focused = $focused.get(0);
+        if ( ! focused) return true;
+        var pos = focused.selectionStart;
+        var txt = $focused.val();
+        $focused.val(txt.substr(0,pos) + in_txt + txt.substr(pos));
+        if (focused.setSelectionRange)
+            focused.setSelectionRange(pos + in_txt.length, pos + in_txt.length);
+        return false;
     }
 });
 

@@ -14,6 +14,12 @@ window.ympbyc_kakahiakaide = (function () {
         }],
         model_watches: [],
         dom_listeners: [],
+        libraries: [
+            ["http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js", "jQuery"],
+            ["http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js", "_"],
+            ["../../bower_components/underscore-fix/underscore-fix.js", "_"],
+            ["../../bower_components/kakahiaka/kakahiaka.js", "kakahiaka"]
+        ],
 
         selected_model_watch_id: null,
         selected_transition_id: null,
@@ -101,8 +107,9 @@ window.ympbyc_kakahiakaide = (function () {
         setTimeout(function () {
             refresh_execute(app, state);
         }, 0);
-        return {dom_listeners: [],
-                models:        []};
+        return K.meta({dom_listeners: [],
+                       models:        {}},
+                      {refreshing: true});
     });
 
 
@@ -122,6 +129,7 @@ window.ympbyc_kakahiakaide = (function () {
     }
 
     function persist (state) {
+        if (state.refreshing) return;
         if ( ! state.undoing) app_history.push(state);
         localStorage.setItem("ympbyc_kakahiakaide_state",
                              JSON.stringify(_.pick(state, "models", "transitions",

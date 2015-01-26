@@ -4,6 +4,9 @@
     <meta charset="utf8">
     <meta description="Front End Development Made Interactive As Hell">
     <title>KAKAHIAKA IDE</title>
+    <script>
+      window.__default_window_properties = Object.keys(window);
+    </script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/underscore-fix/underscore-fix.js"></script>
@@ -11,6 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
+    <link rel="stylesheet" href="css/icomoon.css" />
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_light.min.css" />
   </head>
@@ -25,14 +29,16 @@
     <div class="top-half box resize-v">
       <section class="preview box resize-h" id="preview">
         <iframe id="user-app-iframe" src="examples/fruits_machine/index.html"></iframe>
-        <button id="btn-user-app-reload" class="btn btn-blue">RELOAD</button>
+        <input id="user-app-html-href" class="code transcluent"
+               value="examples/fruits_machine/index.html"></input>
+        <button id="btn-user-app-reload" class="btn btn-blue transcluent">RELOAD</button>
       </section>
       <section id="ide" class="ide box">
         <div class="ide-model ide-section box">
           <h2>STATE</h2>
           <table class="ide-state-table box">
-            <col width="20%" />
-            <col width="60%" />
+            <col width="25%" />
+            <col width="55%" />
             <col width="20%" />
             <thead>
               <tr> <th>MODEL</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
@@ -53,7 +59,7 @@
             <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (state, old_state) {</div>
             <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
             <div>});</div>
-            <button class="delete-snippet btn btn-red hidden">✖︎</button>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
           </div>
         </div>
 
@@ -73,7 +79,7 @@
 return { ... };
             </textarea>
             <div>});</div>
-            <button class="delete-snippet btn btn-red hidden">✖︎</button>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
           </div>
         </div>
 
@@ -92,8 +98,18 @@ return { ... };
             <textarea class="ide-dom-listener-body code-body round"
                       id="ide-dom-listener-body"></textarea>
             <div>});</div>
-            <button class="delete-snippet btn btn-red hidden">✖︎</button>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
           </div>
+        </div>
+
+        <div class="ide-section box">
+          <h3>OTHER GLOBAL OBJECTS</h3>
+          <div id="ide-other-objects" class="pill-wrapper box"></div>
+        </div>
+
+        <div class="ide-section box">
+          <h3>EXTERNAL LIBRARIES</h3>
+          <ul id="ide-libraries" class="cool-list"></ul>
         </div>
 
         <div class="ide-section box">
@@ -112,7 +128,7 @@ return { ... };
           <% _.each(listeners, function (l) {%>
           <div class="state-listener ball" data-id="<%= l.id %>"></div>
           <% }); %>
-          <button class="btn-new-watch btn btn-green">+</button>
+          <button class="btn-new-watch btn btn-small btn-green">+</button>
         </td>
       </tr>
     </script>
@@ -123,16 +139,11 @@ var #i# = K.deftransition(function (state, #i#) {
 }
     </script>
 
-    <script type="text/template" id="code-generation-template">
-<% var ym = window.ympbyc_kakahiakaide.exposed %>
-if ( ! window.jQuery) ;
-if ( ! window._) ;
-if ( ! window.kakahiaka) ;
-
-window.your_app = (function () {
+    <script type="text/template" id="code-generation-template"><% var ym = window.ympbyc_kakahiakaide.exposed %>
+window.init_kakahiaka_app = function () {
     var K = window.kakahiaka;
 
-    var app = K.app(<%- JSON.stringify(models) %>);
+    var user_app = K.app(<%- JSON.stringify(models) %>);
 
     <% _.each(transitions, function (t) { %>
     var <%- t.name %> = K.deftransition(function (<%- t.args.join(",") %>) {
@@ -142,7 +153,7 @@ window.your_app = (function () {
 
 
     <% _.each(model_watches, function (w) { %>
-    K.watch_transition(app, "<%- w.watch_key %>", function (state, old_state) {
+    K.watch_transition(user_app, "<%- w.watch_key %>", function (state, old_state) {
         <%- ym.format_body(w.watch_body) %>
     })
     <% }); %>
@@ -154,9 +165,11 @@ window.your_app = (function () {
     });
     <% }); %>
 
-    return app;
-});
-    </script>
+    return user_app;
+};
+
+
+</script>
 
     <script src="js/injector.js"></script>
     <script src="js/user_app.js"></script>

@@ -22,8 +22,7 @@
 
 
     K.watch_transition(app, "model_watches", function (s, os) {
-        _.each(difference(s.model_watches, os.model_watches), function (w) {
-            console.log(w.watch_body);
+        _.each(_.difference(s.model_watches, os.model_watches), function (w) {
             var wbody = "var $ = document.getElementById('user-app-iframe').contentWindow.$;" + w.watch_body;
             var f = new Function("state", "old_state", wbody);
             f.watch_id = w.id;

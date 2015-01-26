@@ -10,6 +10,10 @@ h3 {
     font-family: mplus-1c-thin, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana
 }
 
+h3 {
+    font-size: 14px;
+}
+
 a,
 a:visited,
 a:active {
@@ -23,7 +27,7 @@ div, section {
 
 input {
     border: none;
-    width: 8em;
+    width: 6em;
 }
 
 textarea, input {
@@ -54,7 +58,7 @@ textarea, input {
 }
 
 .code {
-    font-family: monaco, monospace;
+    font-family: monaco, menlo, monospace;
     font-size: 0.8em;
     font-weight: 100;
 }
@@ -83,6 +87,10 @@ textarea, input {
     cursor: pointer;
 }
 
+.pill-blue {
+    background-color:  #CBE6F3;
+}
+
 .round {
     border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -97,7 +105,11 @@ textarea, input {
 
 .code-edit input {
     border: none;
-    width: 8em;
+    width: 7em;
+}
+
+.code-edit textarea {
+    height: 5em;
 }
 
 .code-edit textarea, .code-edit input {
@@ -134,9 +146,15 @@ textarea, input {
     background-color: #CBE6F3;
 }
 
+.btn-small {
+    margin: 0;
+    padding: 1px 4px;
+    font-size: 0.5em;
+}
+
 .delete-snippet {
     position: absolute;
-    right: 20px;
+    right: 10px;
     top: 30px;
 }
 
@@ -159,6 +177,28 @@ textarea, input {
     -o-appearance: none;
     appearance: none;
 }
+
+.transcluent {
+    opacity: 0.6;
+}
+
+.transcluent:hover {
+    opacity: 1;
+}
+
+.cool-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cool-list>li {
+    margin: 0;
+    padding: 10px 10px;
+    border-bottom: 0.5px solid #888;
+    font-size: 0.8em;
+}
+
 
 /* ----- global sections ----- */
 
@@ -206,7 +246,8 @@ textarea, input {
     padding: 10px;
 }
 
-.ide-section h2 {
+.ide-section h2,
+.ide-section h3 {
     margin-bottom: 8px;
 }
 
@@ -237,6 +278,10 @@ textarea, input {
 
 .ide-state-table .state-key:after {
     content: "  :";
+}
+
+.ide-state-table .state-val input {
+    width: 90%;
 }
 
 .ide-state-table .state-val {
@@ -324,9 +369,6 @@ textarea, input {
 
 
 .btn-new-watch {
-    margin: 0;
-    padding: 1px 4px;
-    font-size: 0.5em;
     float: right;
 }
 
@@ -347,4 +389,11 @@ textarea, input {
     position: absolute;
     top: 10px;
     right: 10px;
+}
+
+#user-app-html-href {
+    position: absolute;
+    top: 10px;
+    right: 80px;
+    width:25em;
 }
