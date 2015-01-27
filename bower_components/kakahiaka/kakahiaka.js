@@ -22,7 +22,7 @@ var kakahiaka = (function () {
         else {
             app._watchers[key] = [f];
             if (immidiate && _.has(app._state, key))
-                setTimeout(function () { f(deref(app), null); }, 0);
+                setTimeout(function () { f(deref(app), {}); }, 0);
         }
         return app;
     }
