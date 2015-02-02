@@ -1,9 +1,16 @@
 window.ympbyc_kakahiakaide_inject = function () {
     window.ympbyc_kakahiakaide_injector = window.ympbyc_kakahiakaide_inject_(
         document.getElementById("user-app-iframe").contentWindow,
-        [["http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js", "jQuery"],
-         ["http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js", "_"],
-         ["../../bower_components/underscore-fix/underscore-fix.js", "_"]]);
+        [
+            /*{test: "jQuery",
+             url:  "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"},
+            {test: "_",
+             url:  "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"},
+            {test: "_",
+             url:  "../../bower_components/underscore-fix/underscore-fix.js"},
+            {test: "kakahiaka",
+             url:  "../../bower_components/kakahiaka/kakahiaka.js"}*/
+        ]);
 };
 
 window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
@@ -12,22 +19,26 @@ window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
         script_els: [],
         urls: [],
         index: 0,
-        push: function (url) {
-            this.urls.push(url);
+        push: function (l) {
+            if ( ! this.win.document.getElementById(l.id))
+                this.urls.push(l);
         },
-        inject: function (cdnurl) {
+        inject: function (l) {
             var sc = this.win.document.createElement("script");
-            sc.src = cdnurl;
+            sc.setAttribute("id", l.id);
+            sc.src = l.url;
             this.win.document.body.appendChild(sc);
             return sc;
         },
         load: function () {
-            var url = this.urls[this.index];
-            if (!url) {
+            var l = this.urls[this.index];
+            if (!l) {
+                this.index = 0;
+                this.urls = [];
                 this.on_last_item_loaded();
                 return;
             }
-            var el = this.inject(url);
+            var el = this.inject(l);
             this.script_els.push(el);
             this.load_next_on_loaded(el);
         },
@@ -45,8 +56,8 @@ window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
     };
 
     srcs.forEach(function (src) {
-        if ( ! win[src[1]])
-            injector.push(src[0]);
+        if (! src.test || ! win[src.test])
+            injector.push(src);
     });
     injector.load();
 

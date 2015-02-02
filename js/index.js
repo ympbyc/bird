@@ -79,6 +79,7 @@ $(function () {
         _.each(s.transitions, function (t) {
             $("<span>").addClass("transition-pill pill code")
                 .attr("data-id", t.id)
+                .attr("data-model", "transitions")
                 .text(t.name)
                 .hover(function () {
                     $(this).text(make_signature(t));
@@ -110,6 +111,7 @@ $(function () {
         _.each(s.dom_listeners, function (l) {
             $("<span>").addClass("dom-listener-pill pill code")
                 .attr("data-id", l.id)
+                .attr("data-model", "dom_listeners")
                 .text(l.selector + "  " + l.event)
                 .appendTo($dom_listeners);
         });
@@ -138,13 +140,14 @@ $(function () {
     K.watch_transition(app, "libraries", function (s) {
         $libraries.html("");
         _.each(s.libraries, function (l) {
-            $("<li>").html('<a href="'+l[0]+'">'+l[0]+'</a>').appendTo($libraries);
+            $("<li>").html('<a href="'+l.url+'">'+l.url+'</a>'
+                           + '<button data-id="'+l.id+'" class="lib-remove icon-bin btn btn-red"></button>').appendTo($libraries);
         });
     });
 
 
     $("#user-app-iframe").get(0).onload = function () {
-        window.ympbyc_kakahiakaide_inject();
+        //window.ympbyc_kakahiakaide_inject();
         exposed.refresh(app);
     };
 
@@ -250,6 +253,30 @@ $(function () {
         $dom_listener_edit.addClass("hidden");
     });
 
+    $("#ide-new-library").on("keydown", function (e) {
+        if (e.keyCode !== 13) return;
+        exposed.add_library(app, $(this).val());
+        $(this).val("");
+    });
+
+    $libraries.on("click", ".lib-remove", function () {
+        exposed.remove_library(app, $(this).data("id"));
+    });
+
+    $("#ide").on("mouseover", ".pill,.ball", function (e) {
+        var $this = $(this);
+        var id = $this.data("id");
+        var model = $this.data("model");
+        var code;
+        if (model)
+            code = to_code(_.find(K.deref(app)[model],
+                                  _.compose(_.eq(id), _.flippar(_.at, "id"))),
+                           model);
+        else code = window[$this.text()].toString();
+        code_preview(code, true, $this);
+    }).on("mouseout", ".pill", function () {
+        code_preview("", false);
+    });
 
     /*
     $(".pill-wrapper").on("click", ".pill", function (e) {
@@ -306,26 +333,54 @@ $(function () {
     var code_template = _.template($("#code-generation-template").html());
 
     $(".ide-export-app").click(function () {
-        var $p = $("#preview");
-        $p.html('<pre><code class="javascript hljs">'
-                + code_template(K.deref(app))
-                + "("
-                + window.ympbyc_kakahiakaide_inject_.toString()
-                + "(window, "
-                + JSON.stringify(K.deref(app).libraries, null, "  ")
-                + ")).on_last_item_loaded = window.init_kakahiaka_app;"
-                + '</code></pre>');
-        hljs.highlightBlock($p.find("pre code").get(0));
+        code_preview(code_template(K.deref(app))
+                     + "("
+                     + window.ympbyc_kakahiakaide_inject_.toString()
+                     + "(window, "
+                     + JSON.stringify(K.deref(app).libraries, null, "  ")
+                     + ")).on_last_item_loaded = window.init_kakahiaka_app;",
+                    true);
     });
 
     $(".ide-export-project").click(function () {
-        var $p = $("#preview");
-        $p.html('<pre><code class="javascript hljs">'
-                + JSON.stringify(K.deref(app), null, "  ")
-                + '</code></pre>');
-        hljs.highlightBlock($p.find("pre code").get(0));
+        code_preview('<pre><code class="javascript hljs">'
+                     + JSON.stringify(K.deref(app), null, "  ")
+                     + '</code></pre>',
+                    true);
     });
 
+    var code_gens = {
+        transitions: function (item) {
+            return "var " + item.name + " = K.deftransition(function ("
+                + item.args.join(",") + ") {"
+                + "\n    " + item.body.replace(/\n/g, "\n    ") + "\n});";
+        },
+        model_watches: function (item) {
+            return "K.watch_transition(user_app, '" + item.watch_key + "', function (state, old_state) {"
+                + "\n    " + item.watch_body.replace(/\n/g, "\n    ") + "\n});";
+        },
+        dom_listeners: function (item) {
+            return "$(document).on('" + item.event + "', '" + item.selector + "', function (e) {"
+                + "\n    " +  item.body.replace(/\n/g, "\n    ") + "\n});";
+        }
+    };
+
+    function to_code (item, model) {
+        return code_gens[model](item);
+    }
+
+    function code_preview (code, toggle, $el) {
+        var $p = $("#ide-code-preview");
+        $p.html('<code class="javascript hljs">' + code + '</pre>').toggleClass("hidden", ! toggle);
+        hljs.highlightBlock($p.find("code").get(0));
+        $("#preview-overlay").toggleClass("hidden", !toggle);
+
+        if (! $el) {
+            $p.css({top: 0, width: "100%"});
+            return;
+        }
+        $p.css({top: $el.offset().top - 50, width: "60%"});
+    }
 
     function make_signature (transition) {
         return transition.name + "(app, " + transition.args.slice(1).join(", ") + ")";

@@ -397,3 +397,32 @@ textarea, input {
     right: 80px;
     width:25em;
 }
+
+
+.lib-remove {
+    float: right;
+}
+
+.code-preview {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+
+.balloon {
+    border: 8px solid #fff;
+    border-radius: 3px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30,30,30,0.65);
+    z-index: 9;
+}

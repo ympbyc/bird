@@ -15,10 +15,18 @@ window.ympbyc_kakahiakaide = (function () {
         model_watches: [],
         dom_listeners: [],
         libraries: [
-            ["http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js", "jQuery"],
-            ["http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js", "_"],
-            ["../../bower_components/underscore-fix/underscore-fix.js", "_"],
-            ["../../bower_components/kakahiaka/kakahiaka.js", "kakahiaka"]
+            {id:   uniqId(),
+             test: "jQuery",
+             url:  "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"},
+            {id:   uniqId(),
+             test: "_",
+             url:  "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"},
+            {id:   uniqId(),
+             test: "_",
+             url:  "../../bower_components/underscore-fix/underscore-fix.js"},
+            {id:   uniqId(),
+             test: "kakahiaka",
+             url:  "../../bower_components/kakahiaka/kakahiaka.js"}
         ],
 
         selected_model_watch_id: null,
@@ -87,6 +95,16 @@ window.ympbyc_kakahiakaide = (function () {
         }), "selected_"+name+"_id", null);
     });
 
+    exposed.add_library = K.deftransition(function (state, url) {
+        return {libraries: state.libraries.concat({
+            id:  uniqId(),
+            url: url
+        }) };
+    });
+
+    exposed.remove_library = K.deftransition(function (state, id) {
+        return {libraries: _.reject(state.libraries, _.compose(_.eq(id), _.flippar(_.at, "id"))) };
+    });
 
 
     exposed.undo = K.deftransition(function (state) {
@@ -99,7 +117,8 @@ window.ympbyc_kakahiakaide = (function () {
 
     var refresh_execute = K.deftransition(function (empty_st, st) {
         return {dom_listeners: st.dom_listeners,
-                models:        st.models};
+                models:        st.models,
+                libraries:     st.libraries};
     });
 
     exposed.refresh = K.deftransition(function (state) {
@@ -108,7 +127,8 @@ window.ympbyc_kakahiakaide = (function () {
             refresh_execute(app, state);
         }, 0);
         return K.meta({dom_listeners: [],
-                       models:        {}},
+                       models:        {},
+                       libraries:     []},
                       {refreshing: true});
     });
 
@@ -133,7 +153,7 @@ window.ympbyc_kakahiakaide = (function () {
         if ( ! state.undoing) app_history.push(state);
         localStorage.setItem("ympbyc_kakahiakaide_state",
                              JSON.stringify(_.pick(state, "models", "transitions",
-                                                   "model_watches", "dom_listeners")));
+                                                   "model_watches", "dom_listeners", "libraries")));
     }
 
     function recover (state) {

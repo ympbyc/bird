@@ -29,6 +29,8 @@
     <div class="top-half box resize-v">
       <section class="preview box resize-h" id="preview">
         <iframe id="user-app-iframe" src="examples/fruits_machine/index.html"></iframe>
+        <div id="preview-overlay" class="box hidden overlay"></div>
+        <pre id="ide-code-preview" class="code-preview box balloon hidden"></pre>
         <input id="user-app-html-href" class="code transcluent"
                value="examples/fruits_machine/index.html"></input>
         <button id="btn-user-app-reload" class="btn btn-blue transcluent">RELOAD</button>
@@ -109,6 +111,9 @@ return { ... };
 
         <div class="ide-section box">
           <h3>EXTERNAL LIBRARIES</h3>
+          <div class="box">
+            <input id="ide-new-library" style="width: 85%; border: 1px solid #acacac" type="url" />
+          </div>
           <ul id="ide-libraries" class="cool-list"></ul>
         </div>
 
@@ -126,7 +131,7 @@ return { ... };
         <td class="state-val code"><%= val %></td>
         <td class="state-listeners">
           <% _.each(listeners, function (l) {%>
-          <div class="state-listener ball" data-id="<%= l.id %>"></div>
+          <div class="state-listener ball" data-id="<%= l.id %>" data-model="model_watches"></div>
           <% }); %>
           <button class="btn-new-watch btn btn-small btn-green">+</button>
         </td>

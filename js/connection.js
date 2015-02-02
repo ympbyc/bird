@@ -86,6 +86,14 @@
         });
     });
 
+    K.watch_transition(app, "libraries", function (s, os) {
+        setTimeout(function () {
+            _.difference(s.libraries, os.libraries).forEach(function (l) {
+                window.ympbyc_kakahiakaide_injector.push(l);
+            });
+            window.ympbyc_kakahiakaide_injector.load();
+        }, 2000);
+    });
 
     function difference (xs, ys) {
         var xsids = _.map(xs, att("id"));
