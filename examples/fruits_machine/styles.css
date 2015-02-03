@@ -2,6 +2,7 @@
 
 body {
     background: #f3f3f3;
+    background-image: url(grid.png);
     padding-top: 70px;
 }
 
@@ -32,4 +33,28 @@ select {
 #fruits {
     padding: 10px 20px;
     line-height: 1.4em;
+}
+
+/* ---------- */
+.screen {
+    background: #fff;
+}
+
+.circle {
+    border-radius: 50%;
+}
+
+.user-profile {
+    margin: 10px 30px;
+    background: #f1f1f1;
+    text-align: center;
+    box-shadow: 0px 2px 2px rgba(30,30,30,0.7);
+    padding: 10px 30px;
+    font-size: 0.8em;
+}
+
+.user-icon {
+    width: 48px;
+    height: 48px;
+    border: 4px solid  #fff;
 }
