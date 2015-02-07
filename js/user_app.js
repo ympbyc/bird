@@ -5,7 +5,11 @@ window.user_app = (function () {
         });
     });
 
-    var app = kakahiaka.app({});
+    var s = {};
+    var app = kakahiaka.app({}, function (state) {
+        window.ympbyc_kakahiakaide_old_userapp_state = s;
+        s = state;
+    });
 
     return app;
 }());

@@ -147,18 +147,20 @@ $(function () {
 
 
     $("#user-app-iframe").get(0).onload = function () {
-        //window.ympbyc_kakahiakaide_inject();
-        exposed.refresh(app);
+        setTimeout(function () {
+            exposed.refresh(app);
+        }, 0);
     };
 
 
     $($watch_body).on("keydown", function (e) {
-        if (e.keyCode !== 13 || e.ctrlKey) return;
+        if (e.keyCode !== 13 || e.ctrlKey) return true;
         var $el = $(this);
         exposed.add_model_watch(app, $watch_key.val(), $el.val());
         $watch_key.val("");
         $el.val("");
         $watch_edit.addClass("hidden");
+        return false;
     });
 
 
@@ -168,10 +170,11 @@ $(function () {
     });
 
     $("#ide-model-create input").on("keydown", function (e) {
-        if (e.keyCode !== 13 || e.ctrlKey) return;
+        if (e.keyCode !== 13 || e.ctrlKey) return true;
         exposed.add_model(app, $model_create_key.val(), eval("("+$model_create_val.val()+")"));
         $("#ide-model-create input").val("");
         $model_create.addClass("hidden");
+        return false;
     });
 
 
@@ -190,7 +193,7 @@ $(function () {
     });
 
     $transition_body.on("keydown", function (e) {
-        if (e.keyCode !== 13 ) return;
+        if (e.keyCode !== 13 || e.ctrlKey) return true;
 
         exposed.add_transition(app,
                                $transition_name.val(),
@@ -198,6 +201,7 @@ $(function () {
                                $transition_body.val());
         [$transition_name, $transition_args, $transition_body].forEach(empty);
         $transition_edit.addClass("hidden");
+        return false;
     });
 
     $transitions.on("click", ".transition-pill", function (e) {
@@ -211,7 +215,7 @@ $(function () {
 
 
     $dom_listener_body.on("keydown", function (e) {
-        if (e.keyCode !== 13 || e.ctrlKey) return;
+        if (e.keyCode !== 13 || e.ctrlKey) return true;
         exposed.add_dom_listener(app,
                                  $dom_listener_ev.val(),
                                  $dom_listener_sel.val(),
@@ -220,6 +224,7 @@ $(function () {
          $dom_listener_sel,
          $dom_listener_body].forEach(empty);
         $dom_listener_edit.addClass("hidden");
+        return false;
     });
 
     $dom_listeners.on("click", ".dom-listener-pill", function (e) {
@@ -254,9 +259,10 @@ $(function () {
     });
 
     $("#ide-new-library").on("keydown", function (e) {
-        if (e.keyCode !== 13) return;
+        if (e.keyCode !== 13) return true;
         exposed.add_library(app, $(this).val());
         $(this).val("");
+        return false;
     });
 
     $libraries.on("click", ".lib-remove", function () {
@@ -274,7 +280,15 @@ $(function () {
                            model);
         else code = window[$this.text()].toString();
         code_preview(code, true, $this);
-    }).on("mouseout", ".pill", function () {
+    }).on("mouseout", ".pill,.ball", function () {
+        code_preview("", false);
+    });
+
+    $(".show-code").hover(function (e) {
+        console.log(9);
+        var obj = eval($(this).data("code"));
+        code_preview(JSON.stringify(obj, null, " "), true, $(this));
+    }, function () {
         code_preview("", false);
     });
 
@@ -415,6 +429,12 @@ $(function () {
 });
 
 
+window.ympbyc_kakahiakaide_notify = function (x, color) {
+    $(".notification").removeClass("hidden").text(x).css({backgroundColor: color});
+    setTimeout(function () {
+        $(".notification").addClass("hidden");
+    }, 2000);
+};
 
 window.kideapp = window.ympbyc_kakahiakaide.app;
 window.kide_ex = window.ympbyc_kakahiakaide.exposed;

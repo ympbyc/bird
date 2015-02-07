@@ -10,7 +10,7 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/underscore-fix/underscore-fix.js"></script>
-    <script src="bower_components/kakahiaka/kakahiaka.js"></script>
+    <script src="../../kakahiaka/kakahiaka.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
@@ -24,7 +24,7 @@
       <button class="ide-undo btn btn-green">UNDO</button>
       <button class="ide-redo btn btn-green">REDO</button>
     </nav>
-    <div class="notification box"></div>
+    <div class="notification box hidden"></div>
 
     <div class="top-half box resize-v">
       <section class="preview box resize-h" id="preview">
@@ -58,7 +58,7 @@
           </table>
 
           <div id="ide-watch-edit" class="ide-watch-edit code-edit round box code hidden">
-            <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (state, old_state) {</div>
+            <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (<span class="show-code" data-code="kakahiaka.deref(user_app)">state</span>, <span class="show-code" data-code="ympbyc_kakahiakaide_old_userapp_state">old_state</span>) {</div>
             <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
             <div>});</div>
             <button class="delete-snippet btn btn-red icon-bin hidden"></button>
@@ -75,7 +75,7 @@
           <div id="ide-transition-edit"
                class="ide-transition-edit code-edit round box code hidden"
                data-autotyper="transition-autotyper-template">
-            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state<input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
+            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
             <textarea id="ide-transition-body"
                       class="ide-transition-edit-body code-body round">
 return { ... };

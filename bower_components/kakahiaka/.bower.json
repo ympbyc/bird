@@ -1,23 +1,32 @@
 {
   "name": "kakahiaka",
+  "authors": [
+    "Minori Yamashita <ympbyc@gmail.com>"
+  ],
+  "description": "Nothing else but Flux",
+  "main": "kakahiaka.js",
+  "moduleType": [
+    "globals"
+  ],
+  "licence": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
-    "components"
+    "components",
+    "bower_components"
   ],
   "dependencies": {
-    "underscore": "~1.4.4",
+    "underscore": "1.7.0",
     "underscore-fix": "git://github.com/ympbyc/underscore-fix.git"
   },
   "homepage": "https://github.com/ympbyc/kakahiaka",
-  "_release": "ef0ad6a67e",
+  "_release": "1d5bd9433a",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "ef0ad6a67e37e37b1d5839b4794278d5701fd2b2"
+    "commit": "1d5bd9433a92eea6d9797eea3faef481736caebc"
   },
   "_source": "https://github.com/ympbyc/kakahiaka.git",
   "_target": "*",
-  "_originalSource": "https://github.com/ympbyc/kakahiaka.git",
-  "_direct": true
+  "_originalSource": "https://github.com/ympbyc/kakahiaka.git"
 }

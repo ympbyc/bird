@@ -113,6 +113,7 @@ textarea, input {
 }
 
 .code-edit textarea, .code-edit input {
+    font-size: 13px;
     font-family: monaco, menlo, monospace;
 }
 
@@ -217,7 +218,16 @@ textarea, input {
 }
 
 .notification {
+    position: absolute;
+    top: 40px;
+    left:0;
+    right:0;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 50;
 }
+
 
 .top-half {
     position: relative;

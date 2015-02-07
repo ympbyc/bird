@@ -1,20 +1,12 @@
 {
   "models": {
-    "fruits": [
-      "🍎"
-    ]
+    "fruits": [],
+    "user": {
+      "name": "Anonymous",
+      "icon": "imgs/icon-user-default.png"
+    }
   },
   "transitions": [
-    {
-      "id": "id1",
-      "name": "update",
-      "args": [
-        "state",
-        "model_key",
-        "model_val"
-      ],
-      "body": "return _.assoc({}, model_key, model_val)"
-    },
     {
       "id": "98d3d938-3612-4ce0-aaad-fc35477285fe",
       "name": "add_fruit",
@@ -31,33 +23,84 @@
         "state"
       ],
       "body": "return {fruits: []}"
+    },
+    {
+      "id": "59878535-8d7a-4ea2-837c-cf5e5dd41c0f",
+      "name": "login",
+      "args": [
+        "state",
+        "user"
+      ],
+      "body": "var fs = localStorage.getItem(\"fruits_machine_\"+user.name) || \"[]\";\nreturn {user: user, \n        fruits: JSON.parse(fs)};"
     }
   ],
   "model_watches": [
     {
       "id": "458c127f-4647-4605-ae13-b08f0e44883a",
       "watch_key": "fruits",
-      "watch_body": "$(\"#fruits\").html(\"\");\nstate.fruits.forEach(function (f) {\n  $(\"\").text(f).appendTo(\"#fruits\");\n});"
+      "watch_body": "kakahiaka.util.dom.commit_collection_change(\n  state.fruits, \n  old_state.fruits || [],\n  function (item) {\n      return $(\"\").text(item);\n  }, \n  $(\"#fruits\"), $);\n$(\".fruits-count\").text(state.fruits.length);\n"
+    },
+    {
+      "id": "1bec09ce-3460-4b2c-9764-4ec047cffd5f",
+      "watch_key": "user",
+      "watch_body": "var is_anonymous = state.user.name !== \"Anonymous\";\n$(\".user-icon\").attr(\"src\", state.user.icon);\n$(\".user-name\").text(state.user.name);\n$(\"#login\").toggleClass(\"hidden\", is_anonymous);\n$(\"#logout\").toggleClass(\"hidden\", ! is_anonymous);"
+    },
+    {
+      "id": "14bafc9e-3c05-4f75-8f20-35de82098450",
+      "watch_key": "fruits",
+      "watch_body": "if (state.user.name !== \"Anonymous\")\n  localStorage.setItem(\n    \"fruits_machine_\"+state.user.name,\n    JSON.stringify(state.fruits)\n  );\n"
     }
   ],
   "dom_listeners": [
     {
-      "id": "0a804caa-9cb1-4173-8ae2-dd6a58349baa",
+      "id": "9a80cc2b-c5b2-462b-82f6-569fae4fde62",
       "event": "click",
       "selector": "#new-fruit-btn",
-      "body": "add_fruit(user_app, _.sample([\n   \"🍎\", \"🍊\", \"🍉\", \"🍇\", \"🍓\", \"🍒\", \"🍏\", \"🍈\", \"🍌\", \"🍑\", \n   \"🍍\", \"🍋\", \"🍐\", \"🌰\"\n]));"
+      "body": "add_fruit(user_app, _.sample([\n    \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\",\n    \"??\", \"??\", \"??\", \"??\"\n]));"
     },
     {
-      "id": "ecf47019-a936-4825-84c1-9d5baaa05b6e",
+      "id": "e1f02a0c-dce5-402a-8b21-f03ee8b4da50",
       "event": "click",
       "selector": "#no-fruits-btn",
       "body": "clear_fruits(user_app);"
     },
     {
-      "id": "d2aa12d7-eb1d-4978-b0fa-ecf88491795c",
+      "id": "c62e1c47-8cec-4506-9511-14c43b8e969d",
       "event": "click",
-      "selector": ".fruit",
-      "body": "var $this = $(this);\nvar count = _.filter(kakahiaka.deref(user_app).fruits, function (f) {\n  return f === $this.text();\n}).length;\nalert(count + \"個の\" + $this.text() + \"があります！！！\");"
+      "selector": "#login",
+      "body": "setTimeout(function () {\n  login(user_app, {\n    name: \"????\", \n    icon: \"imgs/chiyo.png\"\n  });\n});"
+    },
+    {
+      "id": "4e170951-2396-492a-b1cb-b3377134d024",
+      "event": "click",
+      "selector": "#logout",
+      "body": "login(user_app, {\n  name:\"Anonymous\", icon: \"imgs/icon-user-default.png\"\n}, []);"
+    }
+  ],
+  "libraries": [
+    {
+      "id": "7d9d47d4-fc57-437d-8dee-45af71dfa024",
+      "test": "jQuery",
+      "url": "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+    },
+    {
+      "id": "135dd5ab-14e5-4213-8710-70a9fcaf36ae",
+      "test": "_",
+      "url": "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"
+    },
+    {
+      "id": "1cc70f9c-aea6-48ac-8e3d-6aeb4ccf1cb4",
+      "test": "_",
+      "url": "../../bower_components/underscore-fix/underscore-fix.js"
+    },
+    {
+      "id": "8890f1fa-5a41-4a31-8092-5b2e10125b9b",
+      "test": "kakahiaka",
+      "url": "../../bower_components/kakahiaka/kakahiaka.js"
+    },
+    {
+      "id": "acbc019c-24a2-44a4-ac26-30e616572e89",
+      "url": "../../js/utils.js"
     }
   ],
   "selected_model_watch_id": null,

@@ -1,18 +1,3 @@
-window.ympbyc_kakahiakaide_inject = function () {
-    window.ympbyc_kakahiakaide_injector = window.ympbyc_kakahiakaide_inject_(
-        document.getElementById("user-app-iframe").contentWindow,
-        [
-            /*{test: "jQuery",
-             url:  "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"},
-            {test: "_",
-             url:  "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"},
-            {test: "_",
-             url:  "../../bower_components/underscore-fix/underscore-fix.js"},
-            {test: "kakahiaka",
-             url:  "../../bower_components/kakahiaka/kakahiaka.js"}*/
-        ]);
-};
-
 window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
     var injector = {
         win: win,
@@ -63,4 +48,6 @@ window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
 
     return injector;
 };
-window.addEventListener("load", window.ympbyc_kakahiakaide_inject);
+
+window.ympbyc_kakahiakaide_injector = window.ympbyc_kakahiakaide_inject_(
+    document.getElementById("user-app-iframe").contentWindow, []);
