@@ -5,6 +5,7 @@ window.ympbyc_kakahiakaide = (function () {
     var K = kakahiaka;
 
     var app = K.app({
+        app_id:        "kakahiaka_ide.sample.fruits_machine",
         models:        {},
         transitions:   [{
             id:   uniqId(),
@@ -28,6 +29,7 @@ window.ympbyc_kakahiakaide = (function () {
              test: "kakahiaka",
              url:  "../../bower_components/kakahiaka/kakahiaka.js"}
         ],
+        target_html: "examples/fruits_machine/index.html",
 
         selected_model_watch_id: null,
         selected_transition_id: null,
@@ -117,9 +119,9 @@ window.ympbyc_kakahiakaide = (function () {
     });
 
     var refresh_execute = K.deftransition(function (empty_st, st) {
-        return {dom_listeners: st.dom_listeners,
-                models:        st.models,
-                libraries:     st.libraries};
+        return K.meta({dom_listeners: st.dom_listeners,
+                       models:        st.models,
+                       libraries:     st.libraries}, {refreshed: true});
     });
 
     exposed.refresh = K.deftransition(function (state) {

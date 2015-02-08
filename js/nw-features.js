@@ -30,16 +30,11 @@ $(function () {
 
 
     $("#btn-user-app-reload").removeClass("hidden").on("change", function (e) {
-        var cur_src = $("#user-app-iframe").attr("src");
-        var new_src = this.value;
-        if (cur_src !== new_src) {
-            $("#user-app-iframe").attr("src", new_src);
-            $("#user-app-html-href").val(new_src);
-        } else
-            exposed.user_app_context().location.reload();
-
+        K.simple_update(app, "target_html", this.value);
         return false;
     });
+
+
 
     $(".ide-import-project").removeClass("hidden").on("click", function () {
         $("#project-import-file").click();

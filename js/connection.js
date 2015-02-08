@@ -117,10 +117,11 @@
 
     K.watch_transition(app, "libraries", function (s, os) {
         if (s.refreshing) return;
+        var injector = window.ympbyc_kakahiakaide_injector;
         _.difference(s.libraries, os.libraries).forEach(function (l) {
-            window.ympbyc_kakahiakaide_injector.push(l);
+            injector.push(l);
         });
-        window.ympbyc_kakahiakaide_injector.load();
+        injector.load();
     });
 
     function setup_dom_highlighter ($doc, l) {

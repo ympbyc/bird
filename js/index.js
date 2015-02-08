@@ -330,16 +330,21 @@ $(function () {
     $redo.click(function () {
         exposed.redo(app);
     });
+
     /*
     $reload.click(function () {
-        var cur_src = $("#user-app-iframe").attr("src");
-        var new_src = $("#user-app-html-href").val();
-        if (cur_src !== new_src)
-            $("#user-app-iframe").attr("src", new_src);
-        else
-            exposed.user_app_context.location.reload();
+       K.simple_update(app, "target_html", $("#user-app-html-href").val());
     });
-     */
+    */
+
+    K.watch_transition(app, "target_html", function (s, os) {
+        if (s.target_html !== os.target_html) {
+            $("#user-app-iframe").attr("src", s.target_html);
+            $("#user-app-html-href").val(s.target_html);
+        }
+        else
+            exposed.user_app_context().location.reload();
+    });
 
 
     _.chain(window).keys()

@@ -28,7 +28,7 @@
                     children[d.at] = $new.appendTo($el);
 
                 if (window.ympbyc_kakahiakaide)
-                    setTimeout(function () {
+                    K.util.setTimeoutTry(function () {
                         window.ympbyc_kakahiakaide.exposed.show_highlight($new, "whatever", 40, 1000, "#45A1CF");
                     }, 600);
             },
@@ -36,7 +36,7 @@
                 $(children[d.from]).remove();
                 children[d.from] = undefined;
                 if (window.ympbyc_kakahiakaide)
-                    setTimeout(function () {
+                    K.util.setTimeoutTry(function () {
                         window.ympbyc_kakahiakaide.exposed.show_highlight($el, "whatever", 40, 1000, "#45A1CF");
                     }, 600);
             },
@@ -100,5 +100,11 @@
         var before = ["a","b","c","c"];
         var after  = ["e","c","b","c"];
         return K.util.test_eq(K.util.apply_difference(K.util.difference(after, before), before), after);
+    };
+
+    K.util.setTimeoutTry = function (f, time) {
+        setTimeout(function () {
+            try { f(); } catch (err) {}
+        }, time);
     };
 }(window.kakahiaka));

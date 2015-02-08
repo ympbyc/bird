@@ -47,7 +47,6 @@ $(function () {
     //keydown
     var key_idx = 0;
     $(".ide").on("keydown", function (e) {
-        console.log(key_idx);
         play({screenX: key_idx * bar_w / magnifier, screenY: 550}, 200);
         if (e.keyCode === 8) //backspace
             key_idx = key_idx <= 0 ? num_bars : key_idx - 1;
