@@ -1,7 +1,7 @@
 (function (K) {
     K.util = {};
     K.util.dom = {};
-    K.util.dom.commit_collection_change = function (coll, old_coll, f, el, $) {
+    K.util.dom.render_collection_change = function (coll, old_coll, f, el, $) {
         var $el = $(el);
         var $children = $(el).children();
         var children  = $children.get();
@@ -15,22 +15,30 @@
             return;
         }
 
-
-        //todo check here
         var diff = K.util.difference(coll, old_coll);
         console.info("Rendering "
                      + (diff.inserted.length + diff.removed.length)
                      + " items based on calculated diff: " + JSON.stringify(diff));
         var applied = K.util.apply_difference(diff, old_coll, {
             inserted: function (d) {
+                var $new = f(d.item);
                 if (children[d.at])
-                    $(children[d.at]).before(f(d.item));
+                    $(children[d.at]).before($new);
                 else
-                    children[d.at] = f(d.item).appendTo($el);
+                    children[d.at] = $new.appendTo($el);
+
+                if (window.ympbyc_kakahiakaide)
+                    setTimeout(function () {
+                        window.ympbyc_kakahiakaide.exposed.show_highlight($new, "whatever", 40, 1000, "#45A1CF");
+                    }, 600);
             },
             removed: function (d) {
                 $(children[d.from]).remove();
                 children[d.from] = undefined;
+                if (window.ympbyc_kakahiakaide)
+                    setTimeout(function () {
+                        window.ympbyc_kakahiakaide.exposed.show_highlight($el, "whatever", 40, 1000, "#45A1CF");
+                    }, 600);
             },
             compact: function () {
                 children = _.compact(children);
@@ -39,7 +47,7 @@
         setTimeout(function () {
             if ( ! _.isEqual(applied, coll))
                 throw new Error(
-                    "BUG(K.util.commit_collection_change) Please report to KakahiakaIDE team : "
+                    "BUG(K.util.render_collection_change) Please report to KakahiakaIDE team : "
                         + JSON.stringify([applied, coll, old_coll], null, "  ")
                 );
         }, 0);

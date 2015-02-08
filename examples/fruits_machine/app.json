@@ -2,8 +2,8 @@
   "models": {
     "fruits": [],
     "user": {
-      "name": "Anonymous",
-      "icon": "imgs/icon-user-default.png"
+      "name": "佐倉千代",
+      "icon": "imgs/chiyo.png"
     }
   },
   "transitions": [
@@ -38,7 +38,7 @@
     {
       "id": "458c127f-4647-4605-ae13-b08f0e44883a",
       "watch_key": "fruits",
-      "watch_body": "kakahiaka.util.dom.commit_collection_change(\n  state.fruits, \n  old_state.fruits || [],\n  function (item) {\n      return $(\"\").text(item);\n  }, \n  $(\"#fruits\"), $);\n$(\".fruits-count\").text(state.fruits.length);\n"
+      "watch_body": "kakahiaka.util.dom.render_collection_change(\n  state.fruits, \n  old_state.fruits || [],\n  function (item) {\n      return $(\"\").text(item);\n  }, \n  $(\"#fruits\"), $);\n$(\".fruits-count\").text(state.fruits.length);\n"
     },
     {
       "id": "1bec09ce-3460-4b2c-9764-4ec047cffd5f",
@@ -56,7 +56,7 @@
       "id": "9a80cc2b-c5b2-462b-82f6-569fae4fde62",
       "event": "click",
       "selector": "#new-fruit-btn",
-      "body": "add_fruit(user_app, _.sample([\n    \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\", \"??\",\n    \"??\", \"??\", \"??\", \"??\"\n]));"
+      "body": "add_fruit(user_app, _.sample([\n    \"🍎\", \"🍊\", \"🍉\", \"🍇\", \"🍓\", \"🍒\", \"🍏\", \"🍈\", \"🍌\", \"🍑\",\n    \"🍍\", \"🍋\", \"🍐\", \"🌰\"\n]));"
     },
     {
       "id": "e1f02a0c-dce5-402a-8b21-f03ee8b4da50",
@@ -68,13 +68,13 @@
       "id": "c62e1c47-8cec-4506-9511-14c43b8e969d",
       "event": "click",
       "selector": "#login",
-      "body": "setTimeout(function () {\n  login(user_app, {\n    name: \"????\", \n    icon: \"imgs/chiyo.png\"\n  });\n});"
+      "body": "setTimeout(function () {\n  login(user_app, {\n    name: \"佐倉千代\", \n    icon: \"imgs/chiyo.png\"\n  });\n}, 1000);\n$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");"
     },
     {
       "id": "4e170951-2396-492a-b1cb-b3377134d024",
       "event": "click",
       "selector": "#logout",
-      "body": "login(user_app, {\n  name:\"Anonymous\", icon: \"imgs/icon-user-default.png\"\n}, []);"
+      "body": "setTimeout(function () {\n  login(user_app, {\n    name:\"Anonymous\", icon: \"imgs/icon-user-default.png\"\n  }, []);\n}, 1000);\n$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");"
     }
   ],
   "libraries": [
@@ -105,5 +105,6 @@
   ],
   "selected_model_watch_id": null,
   "selected_transition_id": null,
-  "selected_dom_listener_id": null
+  "selected_dom_listener_id": null,
+  "theme": "theme-future"
 }

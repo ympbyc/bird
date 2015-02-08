@@ -54,6 +54,7 @@ select {
 /* -- generic classes -- */
 
 .screen {
+    position: relative;
     width: 320px;
     height: 480px;
     float: left;
@@ -94,6 +95,7 @@ select {
     -o-box-sizing: border-box;
     -ms-box-sizing: border-box;
     box-sizing: border-box;
+    margin: 0;
 }
 
 .hidden {
@@ -173,6 +175,7 @@ select {
     border-radius: 3px;
     box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     cursor: pointer;
+    margin: 0;
 }
 
 .btn:active {
@@ -184,12 +187,23 @@ select {
 }
 
 .btn-red {
-    background-color: #E6855E;
+    background-color: #F7614B;
+    color: #F9DB57;
 }
 
 .btn-blue {
     background-color: #CBE6F3;
 }
+
+.btn-dark-blue {
+    background: #318095;
+    color: #fff;
+}
+
+.btn-yellow {
+    background-color: #F9DB57;
+}
+
 
 .btn-small {
     margin: 0;

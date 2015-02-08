@@ -1,0 +1,23 @@
+.fruit {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.apple {
+    background-image: url(imgs/fruits/apple.png);
+}
+
+.orange {
+    background-image: url(imgs/fruits/orange.png);
+}
+
+.grape {
+    background-image: url(imgs/fruits/grape.png);
+}
+
+.strawberry {
+    background-image: url(imgs/fruits/strawberry.png);
+}

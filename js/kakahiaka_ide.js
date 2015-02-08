@@ -31,7 +31,8 @@ window.ympbyc_kakahiakaide = (function () {
 
         selected_model_watch_id: null,
         selected_transition_id: null,
-        selected_dom_listener_id: null
+        selected_dom_listener_id: null,
+        theme: "theme-hidamari"
     }, persist, recover);
 
     var exposed = {};
@@ -132,6 +133,9 @@ window.ympbyc_kakahiakaide = (function () {
                       {refreshing: true});
     });
 
+    exposed.swap_entire_state = K.deftransition(function (state, newstate) {
+        return newstate;
+    });
 
     function make_model_watch (key, fbody) {
         return {
@@ -150,10 +154,15 @@ window.ympbyc_kakahiakaide = (function () {
 
     function persist (state) {
         if (state.refreshing) return;
-        if ( ! state.undoing) app_history.push(state);
+        if ( ! state.undoing)
+            app_history.push(_.omit(state, state.__meta_keys));
         localStorage.setItem("ympbyc_kakahiakaide_state",
-                             JSON.stringify(_.pick(state, "models", "transitions",
+                             JSON.stringify(_.pick(state, "models", "transitions", "theme",
                                                    "model_watches", "dom_listeners", "libraries")));
+
+        //shouldn't be here
+        $(".ide-undo").attr("disabled", app_history.index < 1);
+        $(".ide-redo").attr("disabled", window.app_history.hist.length <= window.app_history.index + 1);
     }
 
     function recover (state) {
@@ -184,6 +193,9 @@ window.ympbyc_kakahiakaide = (function () {
     }
     exposed.state_arr_find_selected = state_arr_find_selected;
 
+    exposed.user_app_context = function user_app_context () {
+        return document.getElementById('user-app-iframe').contentWindow;
+    };
 
     return {app: app, exposed: exposed};
 }());

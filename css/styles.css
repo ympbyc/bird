@@ -2,6 +2,7 @@ html, body {
     font-family:  mplus-1c-thin, Gotham, 'Helvetica Neue', 'Helvetica', Arial;
     font-weight:  200;
     color: #3c3c3c;
+    height: 100%;
 }
 
 h1,
@@ -48,13 +49,13 @@ textarea, input {
 }
 
 .resize-h {
-    resize: horizontal;
-    overflow: scroll;
+    /*resize: horizontal;*/
+    overflow: hidden;
 }
 
 .resize-v {
-    resize: vertical;
-    overflow: scroll;
+    /*resize: vertical;*/
+    overflow: hidden;
 }
 
 .code {
@@ -72,9 +73,13 @@ textarea, input {
     cursor: pointer;
 }
 
+.ball-red {
+    background: #E6855E;
+}
+
 .pill-wrapper {
     padding: 8px;
-    background: #a3a3a3;
+    background: #eee;
     min-height: 40px;
 }
 
@@ -120,8 +125,13 @@ textarea, input {
 .code-body {
     border: none;
     width: 80%;
-    color: #737373;
+    color: #3c3c3c;
     margin: 2px 40px;
+}
+
+a.btn {
+    font-size: 0.7em;
+    font-weight: normal;
 }
 
 .btn {
@@ -129,6 +139,7 @@ textarea, input {
     border-radius: 3px;
     box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     cursor: pointer;
+    padding: 2px 8px;
 }
 
 .btn:active {
@@ -147,6 +158,10 @@ textarea, input {
     background-color: #CBE6F3;
 }
 
+.btn-yellow {
+    background-color: #F9DB57;
+}
+
 .btn-small {
     margin: 0;
     padding: 1px 4px;
@@ -155,8 +170,8 @@ textarea, input {
 
 .delete-snippet {
     position: absolute;
-    right: 10px;
-    top: 30px;
+    right: 0px;
+    bottom: 0px;
 }
 
 .input-like {
@@ -206,15 +221,17 @@ textarea, input {
 
 .header {
     height: 40px;
-
     background: #44A5CB;
     color: #fff;
-    text-align: center;
     font-size: 20px;
     padding: 10px 0;
 }
 
 .global-title {
+    display: block;
+    width: 180px;
+    text-align: center;
+    margin: 0 auto;
 }
 
 .notification {
@@ -231,7 +248,7 @@ textarea, input {
 
 .top-half {
     position: relative;
-    height: 660px;
+    height: 100%;
     width: 100%;
     overflow: hidden;
 }
@@ -241,12 +258,14 @@ textarea, input {
     float: left;
     width: 55%;
     height: 100%;
+    overflow: scroll;
 }
 
 .ide {
     float: left;
     width: 45%;
     height: 100%;
+    padding: 10px 20px;
 }
 
 
@@ -296,12 +315,12 @@ textarea, input {
 
 .ide-state-table .state-val {
     border-right: 1px dotted #a3a3a3;
+    font-size:    0.7em;
 }
 
 .state-listener {
     float: left;
     margin-right:5px;
-    background: #E6855E;
 }
 
 .state-row-darker {
@@ -399,13 +418,19 @@ textarea, input {
     position: absolute;
     top: 10px;
     right: 10px;
+    width: 80px;
 }
 
 #user-app-html-href {
     position: absolute;
     top: 10px;
-    right: 80px;
+    right: 100px;
     width:25em;
+}
+
+#ide-external-libraries {
+    height: 60px;
+    overflow: hidden;
 }
 
 
@@ -435,4 +460,34 @@ textarea, input {
     bottom: 0;
     background: rgba(30,30,30,0.65);
     z-index: 9;
+}
+
+
+#mouse-tracker {
+    height: 30px;
+    bottom: 0;
+    position: relative;
+    background: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+.sound-bar {
+    margin:   0 1px 0 0;
+    padding:  0;
+    width:    9px;
+    height:   10px;
+    background: rgba(68,165,203, 0.1);
+    position: absolute;
+    top:      0;
+}
+
+.click-sound {
+    background-color: rgba(247,97,75,0.2);
+}
+
+
+.nav-left-control {
+    float: left;
+    margin-left: 20px;
 }

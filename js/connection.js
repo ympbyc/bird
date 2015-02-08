@@ -26,12 +26,18 @@
         _.each(_.difference(s.model_watches, os.model_watches), function (w) {
             var wbody = "var $ = this.$;\n"
                       + "var document = this.document;\n"
+                      + "var window = this;"
                       + w.watch_body;
             var f = new Function("state", "old_state", wbody);
             var g = function (s, os) {
                 try {
-                    f.call(document.getElementById('user-app-iframe').contentWindow, s, os);
-                } catch (err) { ympbyc_kakahiakaide_notify(err.message, '#E06A3B'); }
+                    f.call(exposed.user_app_context(), s, os);
+                } catch (err) { ympbyc_kakahiakaide_notify(err.message, '#F7614B'); }
+                //non-critical
+                setTimeout(function () {
+                    exposed.show_highlight($(".state-listener[data-id="+w.id+"]"), w.id, 0, 1000, "#45A1CF");
+                }, 400);
+                //////
             };
             g.watch_id = w.id;
 
@@ -66,6 +72,13 @@
             window[t.name] = K.deftransition(function (state /*args*/) {
                 var patch = new Function(t.args, t.body).apply(null, _.toArray(arguments));
                 exposed.notify_child_model_change(app, _.merge(state, patch));
+
+                //non-critical
+                setTimeout(function () {
+                    exposed.show_highlight($(".transition-pill[data-id="+t.id+"]"), t.id, 0, 1000, "#45A1CF");
+                }, 200);
+                //////
+
                 return patch;
             });
         });
@@ -80,11 +93,16 @@
     var listeners = {}; //id: f
     K.watch_transition(app, "dom_listeners", function (s, os) {
         var $doc = $("#user-app-iframe").contents();
+        if ( ! $doc) return;
         _.each(s.dom_listeners, function (l) {
-            var f = new Function("e", l.body);
+            var f = new Function(
+                "e",
+                "var $ = window.ympbyc_kakahiakaide.exposed.user_app_context().$;" + l.body);
 
             if (_.has(listeners, l.id)) //update
                 $doc.off(l.event, listeners[l.id]);
+            else
+                setup_dom_highlighter($doc, l);
 
             listeners[l.id] = f;
             $doc.on(l.event, l.selector, f);
@@ -104,6 +122,20 @@
         });
         window.ympbyc_kakahiakaide_injector.load();
     });
+
+    function setup_dom_highlighter ($doc, l) {
+        //misc -- not critical at all///
+        $doc.on("mouseover", l.selector, function () {
+            exposed.show_highlight($(".dom-listener-pill[data-id="+l.id+"]"),
+                                  l.id);
+        }).on("mouseout", l.selector, function () {
+            exposed.hide_highlight(l.id);
+        }).on("click", l.selector, function () {
+            console.log("clicked");
+            exposed.show_highlight($(".dom-listener-pill[data-id="+l.id+"]"),
+                                  l.id+"on", 0, 1000, "#45A1CF");
+        });
+    }
 
     function difference (xs, ys) {
         var xsids = _.map(xs, att("id"));
