@@ -10,7 +10,7 @@
         "icon": "images/icon.png",
         "frame": true,
         "width": 1200,
-        "height": 800,
+        "height": 650,
         "position": "mouse",
         "min_width": 600,
         "min_height": 500

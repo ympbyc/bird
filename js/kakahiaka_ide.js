@@ -156,11 +156,12 @@ window.ympbyc_kakahiakaide = (function () {
 
     function persist (state) {
         if (state.refreshing) return;
+        var data = _.pick(state, "models", "transitions", "theme",
+                          "model_watches", "dom_listeners", "libraries");
         if ( ! state.undoing)
-            app_history.push(_.omit(state, state.__meta_keys));
+            app_history.push(data);
         localStorage.setItem("ympbyc_kakahiakaide_state",
-                             JSON.stringify(_.pick(state, "models", "transitions", "theme",
-                                                   "model_watches", "dom_listeners", "libraries")));
+                             JSON.stringify(data));
 
         //shouldn't be here
         $(".ide-undo").attr("disabled", app_history.index < 1);

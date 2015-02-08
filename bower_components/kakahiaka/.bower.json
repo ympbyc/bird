@@ -20,11 +20,11 @@
     "underscore-fix": "git://github.com/ympbyc/underscore-fix.git"
   },
   "homepage": "https://github.com/ympbyc/kakahiaka",
-  "_release": "1d5bd9433a",
+  "_release": "c70eb7c97f",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "1d5bd9433a92eea6d9797eea3faef481736caebc"
+    "commit": "c70eb7c97fb43250f5bdb272841a8ef537812452"
   },
   "_source": "https://github.com/ympbyc/kakahiaka.git",
   "_target": "*",
