@@ -1,6 +1,13 @@
 {
+  "app_id": "kakahiaka_ide.sample.fruits_machine",
   "models": {
-    "fruits": [],
+    "fruits": [
+      "orange",
+      "orange",
+      "orange",
+      "strawberry",
+      "strawberry"
+    ],
     "user": {
       "name": "佐倉千代",
       "icon": "imgs/chiyo.png"
@@ -103,8 +110,9 @@
       "url": "../../js/utils.js"
     }
   ],
+  "target_html": "examples/fruits_machine/index.html",
   "selected_model_watch_id": null,
   "selected_transition_id": null,
   "selected_dom_listener_id": null,
-  "theme": "theme-high"
+  "theme": "theme-2001"
 }

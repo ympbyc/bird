@@ -2,7 +2,7 @@
 window.init_kakahiaka_app = function () {
     var K = window.kakahiaka;
 
-    var user_app = K.app({"fruits":[],"user":{"name":"佐倉千代","icon":"imgs/chiyo.png"}});
+    var user_app = K.app({"fruits":["orange","orange","orange","strawberry","strawberry","orange","strawberry","orange","orange","apple"],"user":{"name":"佐倉千代","icon":"imgs/chiyo.png"}});
 
     
     var add_fruit = K.deftransition(function (state,f) {
