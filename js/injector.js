@@ -7,25 +7,31 @@ window.ympbyc_kakahiakaide_inject_ = function (win, srcs) {
             if ( ! this.win.document.getElementById(l.id))
                 this.urls.push(l);
         },
-        inject: function (l) {
+        createScriptEl: function (l) {
             var sc = this.win.document.createElement("script");
             sc.setAttribute("id", l.id);
             sc.src = l.url;
-            this.win.document.body.appendChild(sc);
             return sc;
         },
         load: function () {
             this._load();
         },
         _load: function () {
+            var _this = this;
             var l = this.urls.shift();
             if (!l) {
                 this.on_last_item_loaded();
                 return;
             }
-            var el = this.inject(l);
-            this.script_els.push(el);
-            this._load();
+            var el = this.createScriptEl(l);
+            el.onload = el.onreadystatechange = function () {
+                if ( ! el.readyState
+                     || el.readyState == 'loaded'
+                     || el.readyState == 'complete') {
+                    _this._load();
+                }
+            };
+            this.win.document.body.appendChild(el);
         },
         on_last_item_loaded: function () {}
     };

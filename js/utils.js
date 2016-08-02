@@ -2,6 +2,8 @@
     K.util = {};
     K.util.dom = {};
     K.util.dom.render_collection_change = function (coll, old_coll, f, el, $) {
+        coll = coll || [];
+        old_coll = old_coll || [];
         var $el = $(el);
         var $children = $(el).children();
         var children  = $children.get();
@@ -51,6 +53,9 @@
                         + JSON.stringify([applied, coll, old_coll], null, "  ")
                 );
         }, 0);
+    };
+    K.util.dom.react = function (coll, old_coll, dom_gen, area) {
+        K.util.dom.render_collection_change(coll, old_coll, dom_gen, area, $);
     };
 
     K.util.difference = function (xs, ys) {

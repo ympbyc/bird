@@ -6,8 +6,17 @@ $(function () {
     var exposed = window.ympbyc_kakahiakaide.exposed;
     var fs = require("fs");
     var gui = require("nw.gui");
+    var win = gui.Window.get();
 
     gui.App.addOriginAccessWhitelistEntry("~/", "http://localhost/", "file:///", true);
+
+    var nativeMenuBar = new gui.Menu({ type: "menubar" });
+    try {
+        nativeMenuBar.createMacBuiltin("My App");
+        win.menu = nativeMenuBar;
+    } catch (ex) {
+        console.log(ex.message);
+    }
 
     function write_file (name, str) {
         fs.writeFile(name, str, function () {
@@ -52,4 +61,15 @@ $(function () {
         .on("click", function () {
             gui.Window.get().showDevTools();
         });
+
+    /*
+    win.showDevTools('', true);
+    win.on("devtools-opened", function(url) {
+        console.log(url);
+        $("<iframe nodejs></iframe>").attr("src", url)
+            .attr("node-remote", "*localhost*")
+            .addClass("devtools")
+            .appendTo("body");
+    });
+     */
 });

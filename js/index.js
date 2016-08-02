@@ -148,9 +148,19 @@ $(function () {
 
 
     $("#user-app-iframe").get(0).onload = function () {
-        setTimeout(function () {
+        //load libraries prior to refresh
+        var injector = window.ympbyc_kakahiakaide_injector;
+        K.deref(app).libraries.forEach(function (l) {
+            injector.push(l);
+        });
+
+        injector.on_last_item_loaded = function () {
+            window.ympbyc_kakahiakaide.ready = true;
             exposed.refresh(app);
-        }, 0);
+            injector.on_last_item_loaded = function () {};
+        };
+
+        injector.load();
     };
 
 
@@ -246,6 +256,12 @@ $(function () {
 
 
     //delete buttons
+    $("#ide-model-delete").click(function () {
+        exposed.remove_model(app, $model_create_key.val());
+        $("#ide-model-create input").val("");
+        $model_create.addClass("hidden");
+    });
+
     $watch_delete.click(function () {
         exposed.remove_selected_code(app, "model_watch", "es");
         [$watch_key, $watch_body].forEach(empty);
@@ -331,20 +347,20 @@ $(function () {
         exposed.redo(app);
     });
 
-    /*
-    $reload.click(function () {
+
+    /*$reload.click(function () {
        K.simple_update(app, "target_html", $("#user-app-html-href").val());
-    });
-    */
+    });*/
+
 
     K.watch_transition(app, "target_html", function (s, os) {
         if (s.target_html !== os.target_html) {
             $("#user-app-iframe").attr("src", s.target_html);
             $("#user-app-html-href").val(s.target_html);
         }
-        else
+        else if (! s.undoing)
             exposed.user_app_context().location.reload();
-    });
+    }, true);
 
 
     _.chain(window).keys()
@@ -374,6 +390,10 @@ $(function () {
 
     $(".ide-export-project").click(function () {
         code_preview(JSON.stringify(K.deref(app), null, "  "), true);
+    });
+
+    $(".ide-reset-project").click(function () {
+        exposed.swap_entire_state(app, exposed.default_state);
     });
 
 
@@ -407,12 +427,12 @@ $(function () {
 
     var code_gens = {
         transitions: function (item) {
-            return "var " + item.name + " = K.deftransition(function ("
+            return "var " + item.name + " = Bird.deftransition(function ("
                 + item.args.join(",") + ") {"
                 + "\n    " + item.body.replace(/\n/g, "\n    ") + "\n});";
         },
         model_watches: function (item) {
-            return "K.watch_transition(user_app, '" + item.watch_key + "', function (state, old_state) {"
+            return "Bird.watch_transition(user_app, '" + item.watch_key + "', function (state, old_state) {"
                 + "\n    " + item.watch_body.replace(/\n/g, "\n    ") + "\n});";
         },
         dom_listeners: function (item) {
@@ -519,3 +539,10 @@ window.ympbyc_kakahiakaide_notify = function (x, color, fgc, no_close) {
 
 window.kideapp = window.ympbyc_kakahiakaide.app;
 window.kide_ex = window.ympbyc_kakahiakaide.exposed;
+
+window.app = window.user_app;
+window.Bird = window.kakahiaka;
+window.Bird.util.dom.react = function (coll, old_coll, dom_gen, area) {
+    console.log(window.kide_ex.user_app_context().$("#fruits")[0])
+    window.Bird.util.dom.render_collection_change(coll, old_coll, dom_gen, area, window.kide_ex.user_app_context().$);
+};

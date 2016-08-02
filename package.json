@@ -1,18 +1,19 @@
 {
-    "name": "KAKAHIAKA IDE",
+    "name": "Bird",
     "main": "index.html",
-    "description": "Front End Development Made Interactive As Hell",
+    "description": "Flux Made Interactive",
     "version": "0.1.1",
-    "keywords": [ "kakahiaka", "ide", "javascript", "runtime", "development" ],
+    "keywords": [ "bird", "javascript", "runtime", "development" ],
     "window": {
-        "title": "KAKAHIAKA IDE",
+        "title": "Bird",
         "toolbar": false,
-        "icon": "images/icon.png",
+        "icon": "./images/bird.png",
         "frame": true,
-        "width": 1200,
-        "height": 650,
+        "width": 1400,
+        "height": 700,
         "position": "mouse",
-        "min_width": 600,
+        "min_width": 860,
         "min_height": 500
-    }
+    },
+    "chromium-args": "--remote-debugging-port=9222"
 }

@@ -3,116 +3,126 @@
   "models": {
     "fruits": [
       "orange",
-      "orange",
-      "orange",
-      "strawberry",
-      "strawberry"
+      "grape",
+      "grape"
     ],
     "user": {
-      "name": "佐倉千代",
-      "icon": "imgs/chiyo.png"
+      "name": "Anonymous",
+      "icon": "imgs/icon-user-default.png"
     }
   },
   "transitions": [
     {
-      "id": "98d3d938-3612-4ce0-aaad-fc35477285fe",
+      "id": "5fc25261-6f63-4900-8c78-9df757c173d7",
+      "name": "update",
+      "args": [
+        "state",
+        "model_key",
+        "model_val"
+      ],
+      "body": "return _.assoc({}, model_key, model_val)"
+    },
+    {
+      "id": "1a37faf1-caeb-44ea-8768-66052ea9fc1d",
       "name": "add_fruit",
       "args": [
         "state",
-        "f"
+        "fruit"
       ],
-      "body": "return { fruits: state.fruits.concat([f]) };"
+      "body": "return { fruits: state.fruits.concat(fruit) };\n            "
     },
     {
-      "id": "9f5228b1-397c-49ae-9a87-2ff1917a7131",
-      "name": "clear_fruits",
-      "args": [
-        "state"
-      ],
-      "body": "return {fruits: []}"
-    },
-    {
-      "id": "59878535-8d7a-4ea2-837c-cf5e5dd41c0f",
+      "id": "428bf872-eb55-4c3c-9d00-2c2e38fd3cf8",
       "name": "login",
       "args": [
         "state",
         "user"
       ],
-      "body": "var fs = localStorage.getItem(\"fruits_machine_\"+user.name) || \"[]\";\nreturn {user: user, \n        fruits: JSON.parse(fs)};"
+      "body": "var fruits = user.name === \"Anonymous\"\n  ? []\n  : JSON.parse(localStorage.getItem(\"fruits-machine-\" + user.name) || \"[]\");\nreturn {\n  user: user,\n  fruits: fruits\n};"
     }
   ],
   "model_watches": [
     {
-      "id": "458c127f-4647-4605-ae13-b08f0e44883a",
+      "id": "1d7f4a27-f78b-4d48-912c-8bd00da4c235",
       "watch_key": "fruits",
-      "watch_body": "kakahiaka.util.dom.render_collection_change(\n  state.fruits, \n  old_state.fruits || [],\n  function (item) {\n      return $(\"<div></div>\")\n             .addClass(item)\n             .addClass(\"fruit\");\n  }, \n  $(\"#fruits\"), $);\n$(\".fruits-count\").text(state.fruits.length);\n"
+      "watch_body": "Bird.util.dom.react(\n  state.fruits,\n  old_state.fruits,\n  function (x) { \n    return $('<span class=\"fruit ' + x  + '\"></span>'); \n  },\n  $(\"#fruits\")\n);\n"
     },
     {
-      "id": "1bec09ce-3460-4b2c-9764-4ec047cffd5f",
+      "id": "e4908942-1618-4bc6-8501-a146d0def5b0",
       "watch_key": "user",
-      "watch_body": "var is_anonymous = state.user.name !== \"Anonymous\";\n$(\".user-icon\").attr(\"src\", state.user.icon);\n$(\".user-name\").text(state.user.name);\n$(\"#login\").toggleClass(\"hidden\", is_anonymous);\n$(\"#logout\").toggleClass(\"hidden\", ! is_anonymous);"
+      "watch_body": "var logged_in = state.user.name !== \"Anonymous\";\n$(\".user-icon\").attr(\"src\", state.user.icon);\n$(\".user-name\").text(state.user.name);\n$(\"#login\").toggle(!logged_in);\n$(\"#logout\").toggle(logged_in);"
     },
     {
-      "id": "14bafc9e-3c05-4f75-8f20-35de82098450",
+      "id": "51be1092-0feb-4f65-ab5d-683b503843de",
       "watch_key": "fruits",
-      "watch_body": "if (state.user.name !== \"Anonymous\")\n  localStorage.setItem(\n    \"fruits_machine_\"+state.user.name,\n    JSON.stringify(state.fruits)\n  );\n"
+      "watch_body": "if (state.user.name !== \"Anonymous\")\n  localStorage.setItem(\n    \"fruits-machine-\" + state.user.name,\n    JSON.stringify(state.fruits)\n  );"
+    },
+    {
+      "id": "8e5555cc-ff32-42db-b434-8bd658a8e9be",
+      "watch_key": "fruits",
+      "watch_body": "$(\".fruits-count\").text(state.fruits.length);"
     }
   ],
   "dom_listeners": [
     {
-      "id": "9a80cc2b-c5b2-462b-82f6-569fae4fde62",
+      "id": "b05dacff-3d77-4244-8582-e1bc0f28265f",
       "event": "click",
       "selector": "#new-fruit-btn",
-      "body": "add_fruit(user_app, _.sample([\n    \"apple\", \"orange\", \"grape\", \"strawberry\"\n]));"
+      "body": "add_fruit(app, _.sample([\"apple\", \"strawberry\", \"orange\", \"grape\"]));"
     },
     {
-      "id": "e1f02a0c-dce5-402a-8b21-f03ee8b4da50",
+      "id": "670175e5-012f-4945-b54c-ea904df6a202",
       "event": "click",
       "selector": "#no-fruits-btn",
-      "body": "clear_fruits(user_app);"
+      "body": "update(app, \"fruits\", []);"
     },
     {
-      "id": "c62e1c47-8cec-4506-9511-14c43b8e969d",
+      "id": "b001b4c9-549e-4fe5-bf51-cb8e565bb7d3",
       "event": "click",
       "selector": "#login",
-      "body": "setTimeout(function () {\n  login(user_app, {\n    name: \"佐倉千代\", \n    icon: \"imgs/chiyo.png\"\n  });\n}, 1000);\n$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");"
+      "body": "$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");\nsetTimeout(function () {\n  login(app, {\n    name: \"Mr. Bird\",\n    icon: \"imgs/bird.png\"\n  });\n}, 1000);"
     },
     {
-      "id": "4e170951-2396-492a-b1cb-b3377134d024",
+      "id": "ae0cb0cc-0d70-4a31-bc8b-4f9b72d69730",
       "event": "click",
       "selector": "#logout",
-      "body": "setTimeout(function () {\n  login(user_app, {\n    name:\"Anonymous\", icon: \"imgs/icon-user-default.png\"\n  }, []);\n}, 1000);\n$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");"
+      "body": "$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");\nsetTimeout(function () {\n  login(app, {\n    name: \"Anonymous\",\n    icon: \"imgs/icon-user-default.png\"\n  });\n}, 1000)"
+    },
+    {
+      "id": "4a8c3dbd-210b-4a06-9052-b08620702bbd",
+      "event": "click",
+      "selector": "#share",
+      "body": "alert(\"I got \" + Bird.deref(app).fruits.length + \" fruits!\");"
     }
   ],
   "libraries": [
     {
-      "id": "7d9d47d4-fc57-437d-8dee-45af71dfa024",
+      "id": "a4885c53-fb77-4c2e-88db-eb278d5ae898",
       "test": "jQuery",
       "url": "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"
     },
     {
-      "id": "135dd5ab-14e5-4213-8710-70a9fcaf36ae",
+      "id": "ace15634-aa08-4e2d-bc84-40e3222f92db",
       "test": "_",
       "url": "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"
     },
     {
-      "id": "1cc70f9c-aea6-48ac-8e3d-6aeb4ccf1cb4",
-      "test": "_",
-      "url": "../../bower_components/underscore-fix/underscore-fix.js"
+      "id": "f6a3a155-daaa-4a65-a704-37aa07047d52",
+      "url": "http://proto.pilotz.jp/bird/libs/underscore-fix.js"
     },
     {
-      "id": "8890f1fa-5a41-4a31-8092-5b2e10125b9b",
+      "id": "813d733c-af09-4d11-a025-34e40f5984ec",
       "test": "kakahiaka",
-      "url": "../../bower_components/kakahiaka/kakahiaka.js"
+      "url": "http://proto.pilotz.jp/bird/libs/kakahiaka.js"
     },
     {
-      "id": "acbc019c-24a2-44a4-ac26-30e616572e89",
-      "url": "../../js/utils.js"
+      "id": "dded18a1-19e3-46b0-863a-0ccca7fe0293",
+      "url": "http://proto.pilotz.jp/bird/libs/utils.js"
     }
   ],
-  "target_html": "examples/fruits_machine/index.html",
+  "target_html": "/Users/yamashita/Work/gadgets/bird/examples/fruits_machine/index.html",
   "selected_model_watch_id": null,
   "selected_transition_id": null,
   "selected_dom_listener_id": null,
-  "theme": "theme-2001"
+  "theme": "theme-default"
 }

@@ -22,20 +22,32 @@
     });
 
 
+
+
     K.watch_transition(app, "model_watches", function (s, os) {
         _.each(_.difference(s.model_watches, os.model_watches), function (w) {
             var wbody = "var $ = this.$;\n"
-                      + "var document = this.document;\n"
-                      + "var window = this;"
-                      + w.watch_body;
+                    + "var document = this.document;\n"
+                    + "var window = this;\n"
+                    //+ "var Bird = this.kakahiaka; \n"
+                    + w.watch_body;
             var f = new Function("state", "old_state", wbody);
             var g = function (s, os) {
                 try {
                     f.call(exposed.user_app_context(), s, os);
-                } catch (err) { ympbyc_kakahiakaide_notify(err.message, '#F7614B'); }
+                } catch (err) {
+                    if ( ! window.ympbyc_kakahiakaide.ready) {
+                        console.log("surpressed an error");
+                        return;
+                    }
+                    ympbyc_kakahiakaide_notify(err.message, '#F7614B');
+                    console.error(err);
+                }
                 //non-critical
                 setTimeout(function () {
-                    exposed.show_highlight($(".state-listener[data-id="+w.id+"]"), w.id, 0, 1000, "#45A1CF");
+                    try {
+                        exposed.show_highlight($(".state-listener[data-id="+w.id+"]"), w.id, 0, 1000, "#45A1CF");
+                    } catch (err) {}
                 }, 400);
                 //////
             };
@@ -50,9 +62,7 @@
             else {
                 //! use of unsupported feature !
                 user_app._watchers[w.watch_key][idx] = g;
-                setTimeout(function () {
-                    g(K.deref(user_app), K.deref(user_app));
-                }, 0);
+                g(K.deref(user_app), K.deref(user_app));
             }
         });
         //delete
@@ -118,23 +128,24 @@
     K.watch_transition(app, "libraries", function (s, os) {
         if (s.refreshing) return;
         var injector = window.ympbyc_kakahiakaide_injector;
-        _.difference(s.libraries, os.libraries).forEach(function (l) {
+        var diff = _.difference(s.libraries, os.libraries);
+        diff.forEach(function (l) {
             injector.push(l);
         });
-        injector.load();
+        if (diff.length) injector.load();
     });
 
     function setup_dom_highlighter ($doc, l) {
         //misc -- not critical at all///
         $doc.on("mouseover", l.selector, function () {
             exposed.show_highlight($(".dom-listener-pill[data-id="+l.id+"]"),
-                                  l.id);
+                                   l.id);
         }).on("mouseout", l.selector, function () {
             exposed.hide_highlight(l.id);
         }).on("click", l.selector, function () {
             console.log("clicked");
             exposed.show_highlight($(".dom-listener-pill[data-id="+l.id+"]"),
-                                  l.id+"on", 0, 1000, "#45A1CF");
+                                   l.id+"on", 0, 1000, "#45A1CF");
         });
     }
 

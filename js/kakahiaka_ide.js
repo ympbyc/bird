@@ -4,7 +4,7 @@ window.ympbyc_kakahiakaide = (function () {
     var app_history = window.app_history;
     var K = kakahiaka;
 
-    var app = K.app({
+    var default_state = {
         app_id:        "kakahiaka_ide.sample.fruits_machine",
         models:        {},
         transitions:   [{
@@ -23,24 +23,34 @@ window.ympbyc_kakahiakaide = (function () {
              test: "_",
              url:  "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"},
             {id:   uniqId(),
-             test: "_",
-             url:  "../../bower_components/underscore-fix/underscore-fix.js"},
+             //test: "_",
+             url:  "http://proto.pilotz.jp/bird/libs/underscore-fix.js"},
             {id:   uniqId(),
              test: "kakahiaka",
-             url:  "../../bower_components/kakahiaka/kakahiaka.js"}
+             url:  "http://proto.pilotz.jp/bird/libs/kakahiaka.js"},
+            {id:   uniqId(),
+             //test: "kakahiaka",
+             url:  "http://proto.pilotz.jp/bird/libs/utils.js"}
         ],
         target_html: "examples/fruits_machine/index.html",
 
         selected_model_watch_id: null,
         selected_transition_id: null,
         selected_dom_listener_id: null,
-        theme: "theme-hidamari"
-    }, persist, recover);
+        theme: "theme-default"
+    };
+
+    var app = K.app(_.clone(default_state), persist, recover);
 
     var exposed = {};
+    exposed.default_state = default_state;
 
     exposed.add_model = K.deftransition(function (state, key, val) {
         return {models: _.assoc(state.models, key, val)};
+    });
+
+    exposed.remove_model = K.deftransition(function (state, key) {
+        return {models: _.omit(state.models, key) };
     });
 
     //called when user_app changes its state
@@ -120,8 +130,8 @@ window.ympbyc_kakahiakaide = (function () {
 
     var refresh_execute = K.deftransition(function (empty_st, st) {
         return K.meta({dom_listeners: st.dom_listeners,
-                       models:        st.models,
-                       libraries:     st.libraries}, {refreshed: true});
+                       models:        st.models /*,
+                       libraries:     st.libraries*/}, {refreshed: true});
     });
 
     exposed.refresh = K.deftransition(function (state) {
@@ -130,8 +140,9 @@ window.ympbyc_kakahiakaide = (function () {
             refresh_execute(app, state);
         }, 0);
         return K.meta({dom_listeners: [],
-                       models:        {},
-                       libraries:     []},
+                       models:        {}
+                       //libraries:     []
+                      },
                       {refreshing: true});
     });
 
@@ -157,7 +168,8 @@ window.ympbyc_kakahiakaide = (function () {
     function persist (state) {
         if (state.refreshing) return;
         var data = _.pick(state, "models", "transitions", "theme",
-                          "model_watches", "dom_listeners", "libraries");
+                          "model_watches", "dom_listeners", "libraries",
+                          "target_html");
         if ( ! state.undoing)
             app_history.push(data);
         localStorage.setItem("ympbyc_kakahiakaide_state",
@@ -200,5 +212,5 @@ window.ympbyc_kakahiakaide = (function () {
         return document.getElementById('user-app-iframe').contentWindow;
     };
 
-    return {app: app, exposed: exposed};
+    return {app: app, exposed: exposed, ready: false};
 }());

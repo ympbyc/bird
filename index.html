@@ -2,12 +2,12 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="KAKHIAKA IDE -- Front End Development Made Interactive As Hell">
-    <meta name="keywords"    content="kakahiaka, javascript, runtime, development, flux, smaltalk">
+    <meta name="description" content="Bird -- FLUX Made Interactive">
+    <meta name="keywords"    content="bird, javascript, runtime, development, flux, smaltalk">
     <meta name="author"      content="Minori Yamashita">
     <meta name="contact"     content="ympbyc@gmail.com">
-    <meta name="application-name" content="KAKAHIAKA IDE">
-    <title>KAKAHIAKA IDE</title>
+    <meta name="application-name" content="Bird">
+    <title>Bird</title>
     <script>
       window.__default_window_properties = Object.keys(window);
     </script>
@@ -24,35 +24,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_light.min.css" />
   </head>
   <body>
-    <!--
-                                ,
-                                dM
-                                MMr
-                               4MMML                  .
-                               MMMMM.                xf
-               .              "M6MMM               .MM-
-                Mh..          +MM5MMM            .MMMM
-                .MMM.         .MMMMML.          MMMMMh
-                 )MMMh.        MM5MMM         MMMMMMM
-                  3MMMMx.     'MMM3MMf      xnMMMMMM"
-                  '*MMMMM      MMMMMM.     nMMMMMMP"
-                    *MMMMMx    "MMM5M\    .MMMMMMM=
-                     *MMMMMh   "MMMMM"   JMMMMMMP
-                       MMMMMM   GMMMM.  dMMMMMM            .
-                        MMMMMM  "MMMM  .MMMMM(        .nnMP"
-             ..          *MMMMx  MMM"  dMMMM"    .nnMMMMM*
-              "MMn...     'MMMMr 'MM   MMM"   .nMMMMMMM*"
-               "4MMMMnn..   *MMM  MM  MMP"  .dMMMMMMM""
-                 ^MMMMMMMMx.  *ML "M .M*  .MMMMMM**"
-                    *PMMMMMMhn. *x > M  .MMMM**""
-                       ""**MMMMhx/.h/ .=*"
-                                .3P"%....
-                     [nosig]  nP"     "*MMnx
-
-
-                             KAKAHIAKA IDE
-                    Smoke What You Smoke and *RELAX*
-      -->
     <nav class="header box">
       <div class="nav-left-control box">
         <button id="fullscreen" class="btn btn-blue">FULLSCREEN</button>
@@ -64,7 +35,7 @@
           <option value="theme-hidamari">HIDAMARI</option>
         </select>
         </div>
-      <h1 class="global-title">KAKAHIAKA IDE</h1>
+      <h1 class="global-title">Bird <span style="font-size: 12px;">(<span style="color: #F7614B">β</span>)</span></h1>
       <button class="ide-undo btn btn-green">UNDO</button>
       <button class="ide-redo btn btn-green">REDO</button>
     </nav>
@@ -78,9 +49,18 @@
         <input id="user-app-html-href" class="code transcluent" disabled
                value="examples/fruits_machine/index.html"></input>
         <input type="file" accept=".html"
-               id="btn-user-app-reload" class="transcluent hidden" />
+               id="btn-user-app-reload" class="transcluent" />
       </section>
       <section id="ide" class="ide box">
+
+        <div class="ide-section box ide-export-wrapper">
+          <button class="ide-export-app btn btn-green">EXPORT JS</button>
+          <button class="ide-export-project btn btn-green">EXPORT JSON</button>
+          <input type="file" id="project-import-file" accept=".json" class="hidden" />
+          <button class="ide-import-project btn btn-green hidden">IMPORT JSON</button>
+          <button class="ide-reset-project btn btn-red">RESET PROJECT</button>
+        </div>
+
         <div class="ide-model ide-section box">
           <h2>STATE</h2>
           <table class="ide-state-table box">
@@ -95,6 +75,7 @@
               <tr id="ide-model-create" class="hidden">
                 <td class="state-key code"><input id="ide-model-create-key" type="text" ></td>
                 <td class="state-val code"><input id="ide-model-create-val" type="text" ></td>
+                <td><button id="ide-model-delete" class="btn btn-red icon-bin"></button></td>
               </tr>
               <tr>
                 <td><button class="btn btn-green" id="ide-model-add">+</button></td>
@@ -103,7 +84,7 @@
           </table>
 
           <div id="ide-watch-edit" class="ide-watch-edit code-edit round box code hidden">
-            <div>K.watch(&lt;app&gt;, <input id="ide-watch-key" type="text" class="round">, function (<span class="show-code" data-code="kakahiaka.deref(user_app)">state</span>, <span class="show-code" data-code="ympbyc_kakahiakaide_old_userapp_state">old_state</span>) {</div>
+            <div>Bird.watch(app, <input id="ide-watch-key" type="text" class="round">, function (<span class="show-code" data-code="kakahiaka.deref(user_app)">state</span>, <span class="show-code" data-code="ympbyc_kakahiakaide_old_userapp_state">old_state</span>) {</div>
             <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
             <div>});</div>
             <button class="delete-snippet btn btn-red icon-bin hidden"></button>
@@ -120,7 +101,7 @@
           <div id="ide-transition-edit"
                class="ide-transition-edit code-edit round box code hidden"
                data-autotyper="transition-autotyper-template">
-            <div>var <input id="ide-transition-name" type="text" class="round"> = K.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
+            <div>var <input id="ide-transition-name" type="text" class="round"> = Bird.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
             <textarea id="ide-transition-body"
                       class="ide-transition-edit-body code-body round">
 return { ... };
@@ -138,10 +119,10 @@ return { ... };
           </div>
           <div id="ide-dom-listener-edit"
                class="ide-dom-listener-edit code-edit round box code hidden">
-            <div>$("#k-app").on(<input type="text" class="round"
-                                       id="ide-dom-listener-ev">,
-              <input type="text" class="round"
-                     id="ide-dom-listener-sel">, function (e) {</div>
+            <div>$("#k-app").on(&quot;<input type="text" class="round"
+                                       id="ide-dom-listener-ev">&quot;,
+              &quot;<input type="text" class="round"
+                           id="ide-dom-listener-sel">&quot;, function (e) {</div>
             <textarea class="ide-dom-listener-body code-body round"
                       id="ide-dom-listener-body"></textarea>
             <div>});</div>
@@ -150,8 +131,32 @@ return { ... };
         </div>
 
         <div class="ide-section box">
-          <h3>OTHER GLOBAL OBJECTS</h3>
-          <div id="ide-other-objects" class="pill-wrapper box"></div>
+          <h3>QUICK HELP</h3>
+          <div class="pill-wrapper box">
+            <table class="help-table">
+              <tr>
+                <th>$, _</th>
+                <td>jQuery and underscore (w/ underscore-fix)</td>
+              </tr>
+              <tr>
+                <th>app</th>
+                <td>Bird app instance</td>
+              </tr>
+              <tr>
+                <th>Bird.deftransition<!-- :: (State * ... -> {String: Any}) -> App * ... -> ()--></th>
+                <td>Defines diff generating functions</td>
+              </tr>
+              <tr>
+                <th>Bird.watch_transition<!-- :: App * String * (State * State -> ()) -> ()--></th>
+                <td>Watch state changes and perform sideeffects</td>
+              </tr>
+              <tr>
+                <th>Bird.util.dom.react<!-- :: [a] * [a] * (a -> HTMLElement) * jQuery -> ()--></th>
+                <td>Perform minimum DOM mutation calcurated by comparing two arrays</td>
+              </tr>
+            </table>
+          </div>
+          <div id="ide-other-objects" class="pill-wrapper box hidden"></div>
         </div>
 
         <div class="ide-section box" id="ide-external-libraries">
@@ -162,22 +167,15 @@ return { ... };
           <ul id="ide-libraries" class="cool-list"></ul>
         </div>
 
-        <div class="ide-section box ide-export-wrapper">
-          <button class="ide-export-app btn btn-green">EXPORT APP</button>
-          <button class="ide-export-project btn btn-green">EXPORT PROJECT</button>
-          <input type="file" id="project-import-file" accept=".json" class="hidden" />
-          <button class="ide-import-project btn btn-green hidden">IMPORT PROJECT</button>
-        </div>
-
         <div class="ide-section box" id="mouse-tracker"></div>
       </section>
     </div>
-    <div class="tabs-wrap box">
+    <!-- div class="tabs-wrap box">
       <div class="tabs box">
         <div class="tab box tab-active">bf511555-90f1-4fa8-9612-e2c04aa02c36</div>
       </div>
       <div class="new-tab tab box">+</div>
-    </div>
+    </div -->
 
 
     <script type="text/template" id="state-row">
@@ -202,18 +200,20 @@ var #i# = K.deftransition(function (state, #i#) {
     <script type="text/template" id="code-generation-template"><% var ym = window.ympbyc_kakahiakaide.exposed %>
 window.init_kakahiaka_app = function () {
     var K = window.kakahiaka;
+    var Bird = window.kakahiaka;
 
-    var user_app = K.app(<%- JSON.stringify(models) %>);
+    var user_app = Bird.app(<%- JSON.stringify(models) %>);
+    var app = user_app;
 
     <% _.each(transitions, function (t) { %>
-    var <%- t.name %> = K.deftransition(function (<%- t.args.join(",") %>) {
+    var <%- t.name %> = Bird.deftransition(function (<%- t.args.join(",") %>) {
         <%- ym.format_body(t.body) %>
     });
     <% }); %>
 
 
     <% _.each(model_watches, function (w) { %>
-    K.watch_transition(user_app, "<%- w.watch_key %>", function (state, old_state) {
+    Bird.watch_transition(user_app, "<%- w.watch_key %>", function (state, old_state) {
         <%- ym.format_body(w.watch_body) %>
     }, true);
     <% }); %>
@@ -229,17 +229,17 @@ window.init_kakahiaka_app = function () {
 };
 
 
-</script>
+    </script>
 
-    <script src="js/utils.js"></script>
     <script src="js/injector.js"></script>
     <script src="js/user_app.js"></script>
     <script src="js/app_history.js"></script>
     <script src="js/kakahiaka_ide.js"></script>
     <script src="js/connection.js"></script>
+    <script src="js/utils.js"></script>
     <script src="js/index.js"></script>
     <script src="js/mouse-tracking.js"></script>
-    <script src="js/tabs.js"></script>
+    <!-- script src="js/tabs.js"></script -->
     <script src="js/nw-features.js"></script>
   </body>
 </html>

@@ -1,88 +1,99 @@
 
 window.init_kakahiaka_app = function () {
     var K = window.kakahiaka;
+    var Bird = window.kakahiaka;
 
-    var user_app = K.app({"fruits":[],"user":{"name":"佐倉千代","icon":"imgs/chiyo.png"}});
+    var user_app = Bird.app({"fruits":["orange","grape","grape"],"user":{"name":"Anonymous","icon":"imgs/icon-user-default.png"}});
+    var app = user_app;
 
     
-    var add_fruit = K.deftransition(function (state,f) {
-        return { fruits: state.fruits.concat([f]) };
+    var update = Bird.deftransition(function (state,model_key,model_val) {
+        return _.assoc({}, model_key, model_val)
     });
     
-    var clear_fruits = K.deftransition(function (state) {
-        return {fruits: []}
+    var add_fruit = Bird.deftransition(function (state,fruit) {
+        return { fruits: state.fruits.concat(fruit) };
+                    
     });
     
-    var login = K.deftransition(function (state,user) {
-        var fs = localStorage.getItem("fruits_machine_"+user.name) || "[]";
-        return {user: user, 
-                fruits: JSON.parse(fs)};
+    var login = Bird.deftransition(function (state,user) {
+        var fruits = user.name === "Anonymous"
+          ? []
+          : JSON.parse(localStorage.getItem("fruits-machine-" + user.name) || "[]");
+        return {
+          user: user,
+          fruits: fruits
+        };
     });
     
 
 
     
-    K.watch_transition(user_app, "fruits", function (state, old_state) {
-        kakahiaka.util.dom.render_collection_change(
-          state.fruits, 
-          old_state.fruits || [],
-          function (item) {
-              return $("<div></div>")
-                     .addClass(item)
-                     .addClass("fruit");
-          }, 
-          $("#fruits"), $);
-        $(".fruits-count").text(state.fruits.length);
+    Bird.watch_transition(user_app, "fruits", function (state, old_state) {
+        Bird.util.dom.react(
+          state.fruits,
+          old_state.fruits,
+          function (x) { 
+            return $('<span class="fruit ' + x  + '"></span>'); 
+          },
+          $("#fruits")
+        );
         
     }, true);
     
-    K.watch_transition(user_app, "user", function (state, old_state) {
-        var is_anonymous = state.user.name !== "Anonymous";
+    Bird.watch_transition(user_app, "user", function (state, old_state) {
+        var logged_in = state.user.name !== "Anonymous";
         $(".user-icon").attr("src", state.user.icon);
         $(".user-name").text(state.user.name);
-        $("#login").toggleClass("hidden", is_anonymous);
-        $("#logout").toggleClass("hidden", ! is_anonymous);
+        $("#login").toggle(!logged_in);
+        $("#logout").toggle(logged_in);
     }, true);
     
-    K.watch_transition(user_app, "fruits", function (state, old_state) {
+    Bird.watch_transition(user_app, "fruits", function (state, old_state) {
         if (state.user.name !== "Anonymous")
           localStorage.setItem(
-            "fruits_machine_"+state.user.name,
+            "fruits-machine-" + state.user.name,
             JSON.stringify(state.fruits)
           );
-        
+    }, true);
+    
+    Bird.watch_transition(user_app, "fruits", function (state, old_state) {
+        $(".fruits-count").text(state.fruits.length);
     }, true);
     
 
 
     
     $(document).on("click", "#new-fruit-btn", function (e) {
-        add_fruit(user_app, _.sample([
-            "apple", "orange", "grape", "strawberry"
-        ]));
+        add_fruit(app, _.sample(["apple", "strawberry", "orange", "grape"]));
     });
     
     $(document).on("click", "#no-fruits-btn", function (e) {
-        clear_fruits(user_app);
+        update(app, "fruits", []);
     });
     
     $(document).on("click", "#login", function (e) {
+        $(".user-icon").attr("src", "imgs/loading.gif");
         setTimeout(function () {
-          login(user_app, {
-            name: "佐倉千代", 
-            icon: "imgs/chiyo.png"
+          login(app, {
+            name: "Mr. Bird",
+            icon: "imgs/bird.png"
           });
         }, 1000);
-        $(".user-icon").attr("src", "imgs/loading.gif");
     });
     
     $(document).on("click", "#logout", function (e) {
-        setTimeout(function () {
-          login(user_app, {
-            name:"Anonymous", icon: "imgs/icon-user-default.png"
-          }, []);
-        }, 1000);
         $(".user-icon").attr("src", "imgs/loading.gif");
+        setTimeout(function () {
+          login(app, {
+            name: "Anonymous",
+            icon: "imgs/icon-user-default.png"
+          });
+        }, 1000)
+    });
+    
+    $(document).on("click", "#share", function (e) {
+        alert("I got " + Bird.deref(app).fruits.length + " fruits!");
     });
     
 
@@ -90,7 +101,7 @@ window.init_kakahiaka_app = function () {
 };
 
 
-(function (win, srcs) {
+    (function (win, srcs) {
     var injector = {
         win: win,
         script_els: [],
@@ -99,25 +110,31 @@ window.init_kakahiaka_app = function () {
             if ( ! this.win.document.getElementById(l.id))
                 this.urls.push(l);
         },
-        inject: function (l) {
+        createScriptEl: function (l) {
             var sc = this.win.document.createElement("script");
             sc.setAttribute("id", l.id);
             sc.src = l.url;
-            this.win.document.body.appendChild(sc);
             return sc;
         },
         load: function () {
             this._load();
         },
         _load: function () {
+            var _this = this;
             var l = this.urls.shift();
             if (!l) {
                 this.on_last_item_loaded();
                 return;
             }
-            var el = this.inject(l);
-            this.script_els.push(el);
-            this._load();
+            var el = this.createScriptEl(l);
+            el.onload = el.onreadystatechange = function () {
+                if ( ! el.readyState
+                     || el.readyState == 'loaded'
+                     || el.readyState == 'complete') {
+                    _this._load();
+                }
+            };
+            this.win.document.body.appendChild(el);
         },
         on_last_item_loaded: function () {}
     };
@@ -131,27 +148,26 @@ window.init_kakahiaka_app = function () {
     return injector;
 }(window, [
   {
-    "id": "7d9d47d4-fc57-437d-8dee-45af71dfa024",
+    "id": "a4885c53-fb77-4c2e-88db-eb278d5ae898",
     "test": "jQuery",
     "url": "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"
   },
   {
-    "id": "135dd5ab-14e5-4213-8710-70a9fcaf36ae",
+    "id": "ace15634-aa08-4e2d-bc84-40e3222f92db",
     "test": "_",
     "url": "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"
   },
   {
-    "id": "1cc70f9c-aea6-48ac-8e3d-6aeb4ccf1cb4",
-    "test": "_",
-    "url": "../../bower_components/underscore-fix/underscore-fix.js"
+    "id": "f6a3a155-daaa-4a65-a704-37aa07047d52",
+    "url": "http://proto.pilotz.jp/bird/libs/underscore-fix.js"
   },
   {
-    "id": "8890f1fa-5a41-4a31-8092-5b2e10125b9b",
+    "id": "813d733c-af09-4d11-a025-34e40f5984ec",
     "test": "kakahiaka",
-    "url": "../../bower_components/kakahiaka/kakahiaka.js"
+    "url": "http://proto.pilotz.jp/bird/libs/kakahiaka.js"
   },
   {
-    "id": "acbc019c-24a2-44a4-ac26-30e616572e89",
-    "url": "../../js/utils.js"
+    "id": "dded18a1-19e3-46b0-863a-0ccca7fe0293",
+    "url": "http://proto.pilotz.jp/bird/libs/utils.js"
   }
 ])).on_last_item_loaded = window.init_kakahiaka_app;
