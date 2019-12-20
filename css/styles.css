@@ -1,0 +1,535 @@
+html, body {
+    font-family:  mplus-1c-thin, Gotham, 'Helvetica Neue', 'Helvetica', Arial;
+    font-weight:  200;
+    color: #3c3c3c;
+    height: 100%;
+}
+
+h1,
+h2,
+h3 {
+    font-family: mplus-1c-thin, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana
+}
+
+h3 {
+    font-size: 14px;
+}
+
+a,
+a:visited,
+a:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+div, section {
+    /* border: 0.5px solid #c3c3c3; */
+}
+
+input {
+    border: none;
+    width: 6em;
+}
+
+textarea, input {
+    font-family: monaco, menlo, monospace;
+}
+
+
+.box {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.resize-h {
+    /*resize: horizontal;*/
+    overflow: hidden;
+}
+
+.resize-v {
+    /*resize: vertical;*/
+    overflow: hidden;
+}
+
+.code {
+    font-family: monaco, menlo, monospace;
+    font-size: 0.8em;
+    font-weight: 100;
+}
+
+.ball {
+    border: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background: #E6855E;
+    cursor: pointer;
+}
+
+.ball-red {
+    background: #E6855E;
+}
+
+.pill-wrapper {
+    padding: 8px;
+    background: #eee;
+    min-height: 40px;
+}
+
+.pill {
+    display: inline-block;
+    padding: 2px 4px;
+    background: #F9DB57;
+    margin: 2px 4px;
+    border-radius: 0.5em;
+    cursor: pointer;
+}
+
+.pill-blue {
+    background-color:  #CBE6F3;
+}
+
+.round {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+.code-edit {
+    padding: 10px 30px;
+    background: #9ACDE7;
+    position: relative;
+    font-size: 12px;
+}
+
+.code-edit input {
+    border: none;
+    width: 7em;
+}
+
+.code-edit textarea {
+    height: 5em;
+}
+
+.code-edit textarea, .code-edit input {
+    font-size: 13px;
+    font-family: monaco, menlo, monospace;
+}
+
+.code-body {
+    border: none;
+    width: 80%;
+    color: #3c3c3c;
+    margin: 2px 40px;
+}
+
+a.btn {
+    font-size: 0.7em;
+    font-weight: normal;
+}
+
+.btn {
+    border: 1px solid #737373;
+    border-radius: 3px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    padding: 2px 8px;
+}
+
+.btn:active {
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2) inset;
+}
+
+.btn-green {
+    background-color: #CFE283;
+}
+
+.btn-red {
+    background-color: #E6855E;
+}
+
+.btn-blue {
+    background-color: #CBE6F3;
+}
+
+.btn-yellow {
+    background-color: #F9DB57;
+}
+
+.btn-small {
+    margin: 0;
+    padding: 1px 4px;
+    font-size: 0.5em;
+}
+
+.delete-snippet {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.input-like {
+    background: #fff;
+    display: inline;
+    height: 15px;
+    padding: 0 2px;
+}
+
+.input-invisible {
+    background: transparent;
+    border: none;
+}
+
+.no-appearance {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+}
+
+.transcluent {
+    opacity: 0.6;
+}
+
+.transcluent:hover {
+    opacity: 1;
+}
+
+.cool-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cool-list>li {
+    margin: 0;
+    padding: 10px 10px;
+    border-bottom: 0.5px solid #888;
+    font-size: 0.8em;
+}
+
+
+/* ----- global sections ----- */
+
+
+.header {
+    height: 40px;
+    background: #44A5CB;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 0;
+}
+
+.global-title {
+    display: block;
+    width: 180px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.notification {
+    position: absolute;
+    top: 40px;
+    left:0;
+    right:0;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 50;
+}
+
+
+.top-half {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.preview {
+    position: relative;
+    float: left;
+    width: 55%;
+    height: 100%;
+    overflow: scroll;
+}
+
+.ide {
+    float: left;
+    width: 45%;
+    height: 100%;
+    padding: 10px 20px;
+}
+
+
+.tabs-wrap {
+    height: 30px;
+    background: #d68276;
+}
+
+.tab {
+    float:left;
+    height: 30px;
+    background: #F7614B;
+    color: #fff;
+    padding: 7px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border-left: .5px solid #9d3d30;
+}
+
+.tab:active,
+.tab-active {
+    box-shadow: 2px 2px 4px #9d3d30 inset;
+}
+
+
+/* ---- ide ---- */
+
+.ide-section {
+    padding: 10px;
+}
+
+.ide-section h2,
+.ide-section h3 {
+    margin-bottom: 8px;
+}
+
+/* ---- ide-model --- */
+
+.ide-model {}
+
+.ide-state-table {
+    table-layout: fixed;
+    width: 100%;
+    background: #FCEDAA;
+}
+
+.ide-state-table thead {
+    font-size: 12px;
+    color: #a3a3a3;
+}
+
+.ide-state-table td,
+.ide-state-table th {
+    padding: 4px 8px;
+    text-align: left;
+    width:   60px;
+    overflow: hidden;
+    resize: none;
+    vertical-align: middle;
+}
+
+.ide-state-table .state-key:after {
+    content: "  :";
+}
+
+.ide-state-table .state-val input {
+    width: 90%;
+}
+
+.ide-state-table .state-val {
+    border-right: 1px dotted #a3a3a3;
+    font-size:    0.7em;
+}
+
+.state-listener {
+    float: left;
+    margin-right:5px;
+}
+
+.state-row-darker {
+    background: #E1D498;
+}
+
+
+/* ---- transitions ---- */
+
+.ide-transitions {
+}
+
+.transition-pill {
+    background: #F9DB57;
+}
+
+
+/* ---- DOM LISTENER ---- */
+
+.ide-dom-listeners {
+    margin-bottom: 10px;
+}
+
+.dom-listener-pill {
+    background: #CFE283;
+}
+
+.ide-dom-listener-edit {
+}
+
+.ide-dom-listener-edit input {
+}
+
+.ide-dom-listener-body {
+
+}
+
+
+/* ---- watch edit ----*/
+
+.ide-watch-edit {
+    margin-top: 10px;
+}
+
+
+/* ---- transition edit ---- */
+
+.ide-transition-edit {
+    margin-top: 10px;
+}
+
+
+
+/**/
+
+.hljs {
+    font-family: monaco, menlo, monospace;
+    font-size: 12px;
+}
+
+
+
+
+.ide-undo {
+    position: absolute;
+    right: 80px;
+    top: 10px;
+}
+
+.ide-redo {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+
+
+.btn-new-watch {
+    float: right;
+}
+
+
+.btn-new-transition,
+.btn-new-dom-listener {
+    float: right;
+}
+
+
+#user-app-iframe, #user-app-div {
+    width: 100%;
+    height: 100%;
+}
+
+
+#btn-user-app-reload {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 80px;
+}
+
+#user-app-html-href {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+    width:25em;
+}
+
+#ide-external-libraries {
+    height: 60px;
+    overflow: hidden;
+}
+
+
+.lib-remove {
+    float: right;
+}
+
+.code-preview {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+
+.balloon {
+    border: 8px solid #fff;
+    border-radius: 3px;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30,30,30,0.65);
+    z-index: 9;
+}
+
+
+#mouse-tracker {
+    height: 30px;
+    bottom: 0;
+    position: relative;
+    background: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+.sound-bar {
+    margin:   0 1px 0 0;
+    padding:  0;
+    width:    9px;
+    height:   10px;
+    background: rgba(68,165,203, 0.1);
+    position: absolute;
+    top:      0;
+}
+
+.click-sound {
+    background-color: rgba(247,97,75,0.2);
+}
+
+
+.nav-left-control {
+    float: left;
+    margin-left: 20px;
+}
+
+
+.devtools {
+    height: 400px;
+    width: 100%;
+}
+
+
+.help-table {
+    font-size: 12px;
+    line-height: 1.6em;
+}
+
+.help-table th {
+    text-align: left;
+    padding-right: 2em;
+    font-family: monaco, menlo, monospace;
+    font-weight: bold;
+}

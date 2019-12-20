@@ -1,0 +1,8 @@
+.DS_Store
+.\#*
+*~
+\#*\#
+bower_components
+nwjs.app
+tmp
+package-lock.json

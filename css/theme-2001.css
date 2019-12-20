@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+html, body {
+    color: #140c1b;
+}
+
+.header,
+header {
+    background-color: #2E1C3E;/*#81bfcc;*/
+}
+
+.ide {
+    background-image: url(../images/space3.png);
+    background-color: #2E1C3E;
+    background-size: cover;
+    padding: 0;
+}
+
+.ide-section {
+    background-color: rgba(255,255,255,0.4);
+    margin-bottom: 2px;
+}
+
+.btn-red {
+    color: #fff;
+    background-color: #ce0d1e;
+}
+
+.btn-yellow {
+    background-color: #f7d945;
+}
+
+.btn-green {
+    background-color: #62cb77;
+}
+
+.pill-wrapper {
+    background-color: #2E1C3E;
+}
+
+.pill {
+    background-color: #f7d945;
+}
+
+.pill-red {
+    background-color: #ce0d1e;
+    color: #fff;
+}
+
+.pill-green {
+    background-color: #62cb77;
+}
+
+.pill-blue {
+    background-color: #81bfcc;/*#318095;*/
+}
+
+.ide-state-table {
+    background-color: #fff; /*#fcf3c7;*/
+}
+
+.state-row-darker {
+    background-color: #c3c3c3; /*#fae88f;*/
+}
+
+.code-edit {
+    background-color:  transparent;
+}
+
+.ball-red {
+    background-color: #fff;
+    height: 6px;
+    width:  6px;
+    border: 4px solid #ce0d1e;
+}
+
+.sound-bar {
+    background-color: rgba(255,255,255,0.03);
+}
+
+.sound-bar.click-sound {
+    background-color: rgba(46,28,62,0.2);
+}
+
+
+.code-edit textarea,
+.code-edit input {
+    border: 1px solid #fff;
+    background: transparent;
+    color: #1c1c1c;
+}
+
+.code-edit textarea {
+    border: none;
+}
+
+.input-like {
+    background: transparent;
+}
+
+
+.help-table {
+    color: #fff;
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf8">
+    <title>FRUITS MACHINE</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
+    <link rel="stylesheet" href="../default.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="emoji.css" />
+  </head>
+  <body>
+    <div id="content" class="box">
+      <div class="screen box">
+        <nav><h1>FRUITS MACHINE</h1></nav>
+        <div>
+          <div class="user-profile box">
+            <img src="imgs/icon-user-default.png" class="user-icon circle" />
+            <div class="user-info">
+              <h2 class="user-name">Anonymous</h2>
+              <div>fruits count: <span class="fruits-count">0</span></div>
+              <div><button id="login" class="btn btn-blue">LOGIN</button></div>
+              <div><button id="logout" class="btn btn-blue" style="display: none">LOGOUT</button></div>
+            </div>
+          </div>
+          <div id="controls" class="box">
+            <button id="new-fruit-btn" class="btn btn-yellow box">Give me a fruit</button>
+            <button id="no-fruits-btn" class="btn btn-red box">Get rid of all the fruits</button>
+          </div>
+          <div id="fruits">
+          </div>
+          <div id="share" class="btn-dark-blue">SHARE</div>
+        </div>
+      </div>
+    </div>
+    <!-- script src="app.js"></script -->
+  </body>
+</html>

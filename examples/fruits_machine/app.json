@@ -1,0 +1,128 @@
+{
+  "app_id": "kakahiaka_ide.sample.fruits_machine",
+  "models": {
+    "fruits": [
+      "orange",
+      "grape",
+      "grape"
+    ],
+    "user": {
+      "name": "Anonymous",
+      "icon": "imgs/icon-user-default.png"
+    }
+  },
+  "transitions": [
+    {
+      "id": "5fc25261-6f63-4900-8c78-9df757c173d7",
+      "name": "update",
+      "args": [
+        "state",
+        "model_key",
+        "model_val"
+      ],
+      "body": "return _.assoc({}, model_key, model_val)"
+    },
+    {
+      "id": "1a37faf1-caeb-44ea-8768-66052ea9fc1d",
+      "name": "add_fruit",
+      "args": [
+        "state",
+        "fruit"
+      ],
+      "body": "return { fruits: state.fruits.concat(fruit) };\n            "
+    },
+    {
+      "id": "428bf872-eb55-4c3c-9d00-2c2e38fd3cf8",
+      "name": "login",
+      "args": [
+        "state",
+        "user"
+      ],
+      "body": "var fruits = user.name === \"Anonymous\"\n  ? []\n  : JSON.parse(localStorage.getItem(\"fruits-machine-\" + user.name) || \"[]\");\nreturn {\n  user: user,\n  fruits: fruits\n};"
+    }
+  ],
+  "model_watches": [
+    {
+      "id": "1d7f4a27-f78b-4d48-912c-8bd00da4c235",
+      "watch_key": "fruits",
+      "watch_body": "Bird.util.dom.react(\n  state.fruits,\n  old_state.fruits,\n  function (x) { \n    return $('<span class=\"fruit ' + x  + '\"></span>'); \n  },\n  $(\"#fruits\")\n);\n"
+    },
+    {
+      "id": "e4908942-1618-4bc6-8501-a146d0def5b0",
+      "watch_key": "user",
+      "watch_body": "var logged_in = state.user.name !== \"Anonymous\";\n$(\".user-icon\").attr(\"src\", state.user.icon);\n$(\".user-name\").text(state.user.name);\n$(\"#login\").toggle(!logged_in);\n$(\"#logout\").toggle(logged_in);"
+    },
+    {
+      "id": "51be1092-0feb-4f65-ab5d-683b503843de",
+      "watch_key": "fruits",
+      "watch_body": "if (state.user.name !== \"Anonymous\")\n  localStorage.setItem(\n    \"fruits-machine-\" + state.user.name,\n    JSON.stringify(state.fruits)\n  );"
+    },
+    {
+      "id": "8e5555cc-ff32-42db-b434-8bd658a8e9be",
+      "watch_key": "fruits",
+      "watch_body": "$(\".fruits-count\").text(state.fruits.length);"
+    }
+  ],
+  "dom_listeners": [
+    {
+      "id": "b05dacff-3d77-4244-8582-e1bc0f28265f",
+      "event": "click",
+      "selector": "#new-fruit-btn",
+      "body": "add_fruit(app, _.sample([\"apple\", \"strawberry\", \"orange\", \"grape\"]));"
+    },
+    {
+      "id": "670175e5-012f-4945-b54c-ea904df6a202",
+      "event": "click",
+      "selector": "#no-fruits-btn",
+      "body": "update(app, \"fruits\", []);"
+    },
+    {
+      "id": "b001b4c9-549e-4fe5-bf51-cb8e565bb7d3",
+      "event": "click",
+      "selector": "#login",
+      "body": "$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");\nsetTimeout(function () {\n  login(app, {\n    name: \"Mr. Bird\",\n    icon: \"imgs/bird.png\"\n  });\n}, 1000);"
+    },
+    {
+      "id": "ae0cb0cc-0d70-4a31-bc8b-4f9b72d69730",
+      "event": "click",
+      "selector": "#logout",
+      "body": "$(\".user-icon\").attr(\"src\", \"imgs/loading.gif\");\nsetTimeout(function () {\n  login(app, {\n    name: \"Anonymous\",\n    icon: \"imgs/icon-user-default.png\"\n  });\n}, 1000)"
+    },
+    {
+      "id": "4a8c3dbd-210b-4a06-9052-b08620702bbd",
+      "event": "click",
+      "selector": "#share",
+      "body": "alert(\"I got \" + Bird.deref(app).fruits.length + \" fruits!\");"
+    }
+  ],
+  "libraries": [
+    {
+      "id": "a4885c53-fb77-4c2e-88db-eb278d5ae898",
+      "test": "jQuery",
+      "url": "http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"
+    },
+    {
+      "id": "ace15634-aa08-4e2d-bc84-40e3222f92db",
+      "test": "_",
+      "url": "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"
+    },
+    {
+      "id": "f6a3a155-daaa-4a65-a704-37aa07047d52",
+      "url": "http://proto.pilotz.jp/bird/libs/underscore-fix.js"
+    },
+    {
+      "id": "813d733c-af09-4d11-a025-34e40f5984ec",
+      "test": "kakahiaka",
+      "url": "http://proto.pilotz.jp/bird/libs/kakahiaka.js"
+    },
+    {
+      "id": "dded18a1-19e3-46b0-863a-0ccca7fe0293",
+      "url": "http://proto.pilotz.jp/bird/libs/utils.js"
+    }
+  ],
+  "target_html": "/Users/yamashita/Work/gadgets/bird/examples/fruits_machine/index.html",
+  "selected_model_watch_id": null,
+  "selected_transition_id": null,
+  "selected_dom_listener_id": null,
+  "theme": "theme-default"
+}

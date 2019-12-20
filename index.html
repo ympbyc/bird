@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Bird -- FLUX Made Interactive">
+    <meta name="keywords"    content="bird, javascript, runtime, development, flux, smaltalk">
+    <meta name="author"      content="Minori Yamashita">
+    <meta name="contact"     content="ympbyc@gmail.com">
+    <meta name="application-name" content="Bird">
+    <title>Bird</title>
+    <script>
+      window.__default_window_properties = Object.keys(window);
+    </script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/underscore-fix/underscore-fix.js"></script>
+    <script src="bower_components/kakahiaka/kakahiaka.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css" />
+    <link rel="stylesheet" href="css/icomoon.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/theme-default.css"  id="css-theme" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/solarized_light.min.css" />
+  </head>
+  <body>
+    <nav class="header box">
+      <div class="nav-left-control box">
+        <button id="fullscreen" class="btn btn-blue">FULLSCREEN</button>
+        <select id="theme-select">
+          <option value="theme-default">DEFAULT</option>
+          <option value="theme-2001">2001</option>
+          <option value="theme-high">HIGH</option>
+          <option value="theme-future">FUTURE</option>
+          <option value="theme-hidamari">HIDAMARI</option>
+        </select>
+        </div>
+      <h1 class="global-title">Bird <span style="font-size: 12px;">(<span style="color: #F7614B">β</span>)</span></h1>
+      <button class="ide-undo btn btn-green">UNDO</button>
+      <button class="ide-redo btn btn-green">REDO</button>
+    </nav>
+    <div class="notification box hidden"></div>
+
+    <div class="top-half box resize-v">
+      <section class="preview box resize-h" id="preview">
+        <iframe id="user-app-iframe" src="" class="box"></iframe>
+        <div id="preview-overlay" class="box hidden overlay"></div>
+        <pre id="ide-code-preview" class="code-preview box balloon hidden"></pre>
+        <input id="user-app-html-href" class="code transcluent"
+               value="examples/fruits_machine/index.html"></input>
+        <input type="file" accept=".html"
+               id="btn-user-app-reload" class="transcluent" />
+      </section>
+      <section id="ide" class="ide box">
+
+        <div class="ide-section box ide-export-wrapper">
+          <button class="ide-export-app btn btn-green">EXPORT JS</button>
+          <button class="ide-export-project btn btn-green">EXPORT JSON</button>
+          <input type="file" id="project-import-file" accept=".json" class="hidden" />
+          <button class="ide-import-project btn btn-green hidden">IMPORT JSON</button>
+          <button class="ide-reset-project btn btn-red">RESET PROJECT</button>
+        </div>
+
+        <div class="ide-model ide-section box">
+          <h2>STATE</h2>
+          <table class="ide-state-table box">
+            <col width="25%" />
+            <col width="55%" />
+            <col width="20%" />
+            <thead>
+              <tr> <th>MODEL</th> <th>VALUE</th> <th>LISTENERS</th> </tr>
+            </thead>
+            <tbody><!-- #state-row --></tbody>
+            <tfoot>
+              <tr id="ide-model-create" class="hidden">
+                <td class="state-key code"><input id="ide-model-create-key" type="text" ></td>
+                <td class="state-val code"><input id="ide-model-create-val" type="text" ></td>
+                <td><button id="ide-model-delete" class="btn btn-red icon-bin"></button></td>
+              </tr>
+              <tr>
+                <td><button class="btn btn-green" id="ide-model-add">+</button></td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div id="ide-watch-edit" class="ide-watch-edit code-edit round box code hidden">
+            <div>Bird.watch(app, <input id="ide-watch-key" type="text" class="round">, function (<span class="show-code" data-code="kakahiaka.deref(user_app)">state</span>, <span class="show-code" data-code="ympbyc_kakahiakaide_old_userapp_state">old_state</span>) {</div>
+            <textarea id="ide-watch-body" class="ide-watch-edit-body code-body round"></textarea>
+            <div>});</div>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
+          </div>
+        </div>
+
+        <div class="ide-transitions-wrap ide-section box">
+          <h2>TRANSITIONS</h2>
+          <div id="ide-transitions" class="ide-transitions pill-wrapper box">
+            <!-- #transition-pill -->
+            <!-- span class="transition-pill pill">simple_update</span -->
+          </div>
+
+          <div id="ide-transition-edit"
+               class="ide-transition-edit code-edit round box code hidden"
+               data-autotyper="transition-autotyper-template">
+            <div>var <input id="ide-transition-name" type="text" class="round"> = Bird.deftransition(function (<div class="input-like round box">state, <input id="ide-transition-args" type="text" class="input-invisible" /></div>) {</div>
+            <textarea id="ide-transition-body"
+                      class="ide-transition-edit-body code-body round">
+return { ... };
+            </textarea>
+            <div>});</div>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
+          </div>
+        </div>
+
+        <div class="ide-dom-listeners-wrap ide-section box">
+          <h2>DOM LISTENERS</h2>
+          <div id="ide-dom-listeners" class="ide-dom-listeners pill-wrapper box">
+            <!-- #dom-listener-pill -->
+            <!-- span class="dom-listener-pill pill">#search click</span -->
+          </div>
+          <div id="ide-dom-listener-edit"
+               class="ide-dom-listener-edit code-edit round box code hidden">
+            <div>$("#k-app").on(&quot;<input type="text" class="round"
+                                       id="ide-dom-listener-ev">&quot;,
+              &quot;<input type="text" class="round"
+                           id="ide-dom-listener-sel">&quot;, function (e) {</div>
+            <textarea class="ide-dom-listener-body code-body round"
+                      id="ide-dom-listener-body"></textarea>
+            <div>});</div>
+            <button class="delete-snippet btn btn-red icon-bin hidden"></button>
+          </div>
+        </div>
+
+        <div class="ide-section box">
+          <h3>QUICK HELP</h3>
+          <div class="pill-wrapper box">
+            <table class="help-table">
+              <tr>
+                <th>$, _</th>
+                <td>jQuery and underscore (w/ underscore-fix)</td>
+              </tr>
+              <tr>
+                <th>app</th>
+                <td>Bird app instance</td>
+              </tr>
+              <tr>
+                <th>Bird.deftransition<!-- :: (State * ... -> {String: Any}) -> App * ... -> ()--></th>
+                <td>Defines diff generating functions</td>
+              </tr>
+              <tr>
+                <th>Bird.watch_transition<!-- :: App * String * (State * State -> ()) -> ()--></th>
+                <td>Watch state changes and perform sideeffects</td>
+              </tr>
+              <tr>
+                <th>Bird.util.dom.react<!-- :: [a] * [a] * (a -> HTMLElement) * jQuery -> ()--></th>
+                <td>Perform minimum DOM mutation calcurated by comparing two arrays</td>
+              </tr>
+            </table>
+          </div>
+          <div id="ide-other-objects" class="pill-wrapper box hidden"></div>
+        </div>
+
+        <div class="ide-section box" id="ide-external-libraries">
+          <h3>EXTERNAL LIBRARIES</h3>
+          <div class="box">
+            <input id="ide-new-library" style="width: 85%; border: 1px solid #acacac" type="url" />
+          </div>
+          <ul id="ide-libraries" class="cool-list"></ul>
+        </div>
+
+        <div class="ide-section box" id="mouse-tracker"></div>
+      </section>
+    </div>
+    <!-- div class="tabs-wrap box">
+      <div class="tabs box">
+        <div class="tab box tab-active">bf511555-90f1-4fa8-9612-e2c04aa02c36</div>
+      </div>
+      <div class="new-tab tab box">+</div>
+    </div -->
+
+
+    <script type="text/template" id="state-row">
+      <tr <% if (row_num % 2 === 0) { %> class="state-row-darker" <% } %>>
+        <td class="state-key code"><%= key %></td>
+        <td class="state-val code"><div style="height:1.1em; overflow:hidden"><%= val %></div></td>
+        <td class="state-listeners">
+          <% _.each(listeners, function (l) {%>
+          <div class="state-listener ball-red ball" data-id="<%= l.id %>" data-model="model_watches"></div>
+          <% }); %>
+          <button class="btn-new-watch btn btn-small btn-green">+</button>
+        </td>
+      </tr>
+    </script>
+
+    <script type="text/template" id="transition-autotyper-template">
+var #i# = K.deftransition(function (state, #i#) {
+    #t#
+}
+    </script>
+
+    <script type="text/template" id="code-generation-template"><% var ym = window.ympbyc_kakahiakaide.exposed %>
+window.init_kakahiaka_app = function () {
+    var K = window.kakahiaka;
+    var Bird = window.kakahiaka;
+
+    var user_app = Bird.app(<%- JSON.stringify(models) %>);
+    var app = user_app;
+
+    <% _.each(transitions, function (t) { %>
+    var <%- t.name %> = Bird.deftransition(function (<%- t.args.join(",") %>) {
+        <%- ym.format_body(t.body) %>
+    });
+    <% }); %>
+
+
+    <% _.each(model_watches, function (w) { %>
+    Bird.watch_transition(user_app, "<%- w.watch_key %>", function (state, old_state) {
+        <%- ym.format_body(w.watch_body) %>
+    }, true);
+    <% }); %>
+
+
+    <% _.each(dom_listeners, function (l) { %>
+    $(document).on("<%- l.event %>", "<%- l.selector %>", function (e) {
+        <%- ym.format_body(l.body) %>
+    });
+    <% }); %>
+
+    return user_app;
+};
+
+
+    </script>
+
+    <script src="js/injector.js"></script>
+    <script src="js/user_app.js"></script>
+    <script src="js/app_history.js"></script>
+    <script src="js/kakahiaka_ide.js"></script>
+    <script src="js/connection.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/mouse-tracking.js"></script>
+    <!-- script src="js/tabs.js"></script -->
+    <script src="js/nw-features.js"></script>
+  </body>
+</html>
